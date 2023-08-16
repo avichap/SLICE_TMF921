@@ -15,7 +15,7 @@
 @prefix   iv: <http://tio.models.tmforum.org/tio/v3.2.0/IntentValidity#> .
 
 # intent
-idan:IB1_Construction_1
+idan:IB1_Construction
   a icm:Intent ;
   cem:layer "'business'" ;
   icm:hasExpectation idan:EB1_1,
@@ -96,20 +96,20 @@ idan:EventB1_1
   a rdfs:Class ;
   rdfs:subClassOf imo:Event ;
   logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventB1_1 ;
-                                              rdfs:member idan:IB1_Construction_1 ]]  ,
+                                              rdfs:member idan:IB1_Construction ]]  ,
                         [t:hasDuration "'PT5M'"^^xsd:duration ] ;
 			 t:before [ t:hasBeginning imo:Now ] ;
          ] ;
-  imo:eventFor idan:IB1_Construction_1
+  imo:eventFor idan:IB1_Construction
 .
 
 idan:EB1_3
   a icm:ReportingExpectation ;
-  icm:target idan:IB1_Construction_1  ;
+  icm:target idan:IB1_Construction  ;
   icm:reportDestination [ rdfs:member idan:IMF_Customer1 ] ;
   icm:reportTriggers [ rdfs:member imo:IntentRejected ; 
                        rdfs:member imo:IntentAccepted ;
-                       rdfs:memner imo:IntentDegrades ;
+                       rdfs:member imo:IntentDegrades ;
                        rdfs:member imo:IntentComplies ;
                        rdfs:member imo:IntentRemoval ;
                        rdfs:member idan:EventB1_1 ]

@@ -1,0 +1,49 @@
+{
+    "externalId": "external-ID_SentToNBI_BSS_ID",
+    "priority": "4",
+    "category": "CSP USAGE CONDITION - ADD",
+    "source": "SIMF",
+    "orderType": "CREATE",
+    "relatedParty": [
+        {
+            "id": "CUSTOMER1_HELMETSERVICE",
+            "source": "BSS",
+            "name": "CUSTOMER1_HELMETSERVICE",
+            "role": "customer"
+        }
+    ],
+    "orderItems": [
+        {
+            "action": "New",
+            "service": {
+                "serviceSpecification": {
+                    "code": "CSP_USAGE_CONDITION",
+                    "version": "1.0"
+                },
+                "characteristics": [
+                    {
+                        "name": "CSP_USAGE_CONDITION1",
+                        "value": "power_consumption"
+                    },
+                    {
+                        "name": "CSP_USAGE_CONDITION2",
+                        "value": "2"
+                    },
+                    {
+                        "name": "SiteCode",
+                        "value": "SiteCode"
+                    }
+                ],
+                "publicIdentifier": "CSP_USAGE_CONDITION1",
+                "serviceRelationship": []
+            },
+            "id": "1"
+        }
+    ],
+    "extraValues": [
+        {
+            "name": "idan3",
+            "value": "true"
+        }
+    ]
+}

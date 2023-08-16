@@ -93,7 +93,7 @@ exports.createIntent = async function(req, res, next) {
 
 /* XXXXXXXXXXXXX Ericsson IRC - Start  XXXXXXXXXXXXXXXx*/
 // calls the service intent handler for creating intent
-            if (expression.indexOf("S1") > 0) { // check whether it's a service intent
+            if ((expression.indexOf("S1")>0) || (expression.indexOf("S2")>0) || (expression.indexOf("S3")>0)){ // check whether it's a service intent
               serviceIntentHandler.processIntent(req);
             }
 /* XXXXXXXXXXXXX Ericsson IRC - End  XXXXXXXXXXXXXXXx*/
@@ -156,7 +156,7 @@ exports.deleteIntent = function(req, res, next) {
 //          console.log('doc: ' + JSON.stringify(doc));
           var expression = doc.expression.expressionValue;
           /* XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
-          if ((expression.indexOf("R1") > 0) || (expression.indexOf("R2") > 0)) { // check whether it's a resource intent
+          if ((expression.indexOf("R1") > 0) || (expression.indexOf("R2") > 0) || (expression.indexOf("R3") > 0)) { // check whether it's a resource intent
             // calls the intent handler for the deletetion of the intent reports triples in the knowledge base
             intentHandler.deleteIntentReports(id, 'IntentReport');
 
@@ -176,7 +176,7 @@ exports.deleteIntent = function(req, res, next) {
 
           /* XXXXXXXXXXXXX Ericsson IRC - Start  XXXXXXXXXXXXXXXx*/
           // calls the service intent handler for deleting intent and intent report
-          if (expression.indexOf("S1") > 0) { // check whether it's a service intent
+          if ((expression.indexOf("S1") > 0) || (expression.indexOf("S2") > 0) || (expression.indexOf("S3") > 0)) { // check whether it's a resource intent
             // calls the intent handler for the deletetion of the intent reports triples in the knowledge base
             serviceIntentHandler.deleteIntentReports(id, 'IntentReport');
 

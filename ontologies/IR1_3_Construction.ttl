@@ -14,77 +14,81 @@
 @prefix cem: <http://tio.labs.tmforum.org/tio/v1.0.0/CatalystExtensionModel#> .
 @prefix   iv: <http://tio.models.tmforum.org/tio/v3.2.0/IntentValidity#> .
 # intent
-idan:IR3_1_Power
+idan:IR1_3_Construction
   a icm:Intent ;
   cem:layer "'resource'" ;
-  icm:hasExpectation idan:ER3_1_1,
-                     idan:ER3_1_2
+  icm:hasExpectation idan:ER1_3_1,
+                     idan:ER1_3_2,
+                     idan:ER1_3_3
 .
 
 # targets
-idan:TR3_1_1
+idan:TR1_3_1
   a icm:Target ;
-  icm:chooseFrom [ set:resourcesOfType  idan:RAN  ] 
+  icm:chooseFrom [ set:resourcesOfType idan:VideoApp  ]  
 .
 
+# expectations
+# we need a construction site safety service aka. helmet service
+idan:ER1_3_1
+  a icm:DeliveryExpectation ;
+  icm:target idan:TR1_3_1 ;
+  icm:targetType idan:VideoApp
+.
 
 # we need certain performance/QoE properties for the service
-idan:ER3_1_1
+idan:ER1_3_2
   a icm:PropertyExpectation ;
-  icm:target idan:TR3_1_1 ;
-  logi:allOf [rdfs:member idan:CR3_1_1 ] #syntax error
-.
-
-# utility
-
-# utility function for latency
-idan:UR3_1_1
-  a mf:LogisticFunction ;
-  a ui:Utility ;
-  mf:functionInput idan:Powerconsumption ;
-  mf:midpoint 20;
-  mf:supremum 1.0 ;
-  mf:logisticGrowth -1.6 ;
-  iv:validIf [ a icm:Condition; #syntax error
-               quan:atLeast [ idan:Powerconsumption [ rdf:value 5 ] ];
-                quan:atMost [ idan:Powerconsumption [ rdf:value 50 ] ]
-             ] 
+  icm:target idan:TR1_3_1 ;
+  logi:allOf [rdfs:member idan:CR1_3_1 ]
 .
 
 # conditions
 
-idan:CR3_1_1
+idan:CR1_3_1
   a icm:Condition ;
-  rdfs:label "'1. Power consumption per square meter < 1.2'" ;
-  quan:smaller [ idan:Powerconsumption
-                 [ rdf:value "1.2"^^xsd:decimal ;
-                   icm:unit80000 "'kwh'" ]
-               ] ;
-  ui:utility idan:UR3_1_1 ;
+  rdfs:label "" ;
+  idan:AccessMode [ rdfs:member idan:4G ;
+                    rdfs:member idan:5G ];
+  idan:UploadBandwidth [ quan:greater
+                 [ rdf:value "5"^^xsd:decimal ;
+                   icm:unit80000 "'Mbps'"] 
+               ];
+  idan:Latency [ quan:smaller
+                 [ rdf:value "2"^^xsd:decimal ;
+                   icm:unit80000 "'s'"] 
+               ];
+  idan:security cem:none;
+  idan:computing [ idan:containers [ rdf:value "50"^^xsd:decimal ;
+                                     idan:vcpu "2"^^xsd:decimal ;
+                                              idan:memory "4"^^xsd:decimal;
+                                              idan:storage "20"^^xsd:decimal;
+                                              idan:graphics "16"^^xsd:decimal ]
+                     ]
 .
 
 # reporting
-
 # event for time-based reporting. Triggereing every 5 minutes
-idan:EventR3_1_1
+idan:EventR1_3_1
   a rdfs:Class ;
   rdfs:subClassOf imo:Event ;
-  logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventR3_1_1 ;
-                                          rdfs:member idan:IR3_1_Power ]]  ,
+  logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventR1_3_1 ;
+                                          rdfs:member idan:IR1_3_Construction ]]  ,
                     [t:hasDuration "'PT5M'"^^xsd:duration ] ;
             t:before [ t:hasBeginning imo:Now ] ;
          ] ;
-  imo:eventFor idan:IR3_1_Power
+  imo:eventFor idan:IR1_3_Construction
 .
 
-idan:ER3_1_2
+idan:ER3_1_3
   a icm:ReportingExpectation ;
-  icm:target idan:IR3_1_Power  ;
+  icm:target idan:IR1_1_Construction  ;
   icm:reportDestination [ rdfs:member idan:IMF_Customer1 ] ;
   icm:reportTriggers [ rdfs:member imo:IntentRejected ; 
                        rdfs:member imo:IntentAccepted ;
                        rdfs:member imo:IntentDegrades ;
                        rdfs:member imo:IntentComplies ;
                        rdfs:member imo:IntentRemoval ;
-                       rdfs:member idan:EventR3_1_1 ]
+                       rdfs:member idan:EventR1_3_1 ]
 .
+

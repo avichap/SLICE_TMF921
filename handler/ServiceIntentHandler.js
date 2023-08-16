@@ -24,11 +24,8 @@ var serviceIntentParams = {
   "bandwidth": 10,
   "availability": 0.9999,
   "networkUtil" : 0.6,
-  "quality": "Premmium",
-  "locations": [
-    "locA",
-    "locB"
-  ],
+  "quality": "Premium",
+  "site": "A wonderful site",
   "reportInterval": 1
 };
 
@@ -45,19 +42,34 @@ exports.processIntent = function(req) {
   extractParamsFromIntent(expression, 'text/turtle');
   console.log("Received Intent Params = " + JSON.stringify(serviceIntentParams));
 
-  //From expression extract triples and load the intent in GraphDB 
-  handlerUtils.extractTriplesandKG(expression, `insert`, 'text/turtle','S1');
+  var serviceOrder;
+  var name;
+  if (expression.indexOf("S1") > 0) {
+    serviceOrder = 'a.json';
+    name = 'S1;'
+  }
+  if (expression.indexOf("S2") > 0) {
+    serviceOrder = 'b.json';
+    name = 'S2;'
+  }
+  if (expression.indexOf("S3") > 0) {
+    serviceOrder = 'service_order_CSP_USAGE_CONDITION_CREATE.json';
+    name = 'S3;'
+  }
+    //From expression extract triples and load the intent in GraphDB 
+  handlerUtils.extractTriplesandKG(expression, `insert`, 'text/turtle',name);
 
   createIntentReport(req);
   var id = req.body.id;
-
-  sendCreateServiceOrder(id);
+  
+  sendCreateServiceOrder(id,serviceOrder);
 
 };
 
-function sendCreateServiceOrder(id) {
+function sendCreateServiceOrder(id,serviceOrder) {
   const soUtils = require('../utils/soUtils');
-  fs.readFile('./serviceorders/service_order_connectivity_ptp_CREATE.json', 'utf8', (err, createOrder) => {
+  
+  fs.readFile(`./serviceorders/${serviceOrder}`, 'utf8', (err, createOrder) => {
 
     if (err) {
       console.error('unable to read create service order json file due to error:', err);
@@ -69,15 +81,13 @@ function sendCreateServiceOrder(id) {
     createOrderJson.orderItems[0].service.publicIdentifier = id;
 
     if ((serviceIntentParams.quality == 'Premium') && (serviceIntentParams.availability >= 0.99)) {
-      createOrderJson.orderItems[0].service.characteristics[0].value = "Silver";
+      createOrderJson.orderItems[0].service.characteristics[1].value = "10";
     } else {
-      createOrderJson.orderItems[0].service.characteristics[0].value = "Bronze";
+      createOrderJson.orderItems[0].service.characteristics[1].value = "5";
     }
 
-    createOrderJson.orderItems[0].service.characteristics[1].value = serviceIntentParams.bandwidth.toString();
-
-    createOrderJson.orderItems[0].service.places[0].name = serviceIntentParams.locations[0];
-    createOrderJson.orderItems[0].service.places[1].name = serviceIntentParams.locations[1];
+    createOrderJson.orderItems[0].service.characteristics[2].value = serviceIntentParams.site.toString();
+    
     console.log("SERVICE ORDER = " + JSON.stringify(createOrderJson));
 
     try {

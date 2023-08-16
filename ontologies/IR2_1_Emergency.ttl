@@ -101,7 +101,7 @@ idan:ER2_1_2
   icm:reportDestination [ rdfs:member idan:IMF_Customer2 ] ;
   icm:reportTriggers [ rdfs:member imo:IntentRejected ; 
                        rdfs:member imo:IntentAccepted ;
-                       rdfs:memner imo:IntentDegrades ;
+                       rdfs:member imo:IntentDegrades ;
                        rdfs:member imo:IntentComplies ;
                        rdfs:member imo:IntentRemoval ;
                        rdfs:member idan:EventR2_1_1 ]
