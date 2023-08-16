@@ -1,0 +1,24 @@
+{
+  "statusChangeDate": "2022-07-23T04:56:07.000+00:00",
+  "expression": {
+    "iri": "http://tio.models.tmforum.org/tio/v3.2.0/IntentCommonModel/",
+    "@baseType": "Expression",
+    "@type": "TurtleExpression",
+    "expressionLanguage": "Turtle",
+    "expressionValue": "@prefix icm:  <http://tio.models.tmforum.org/tio/v3.2.0/IntentCommonModel#> .\n@prefix imo:  <http://tio.models.tmforum.org/tio/v3.2.0/IntentManagmentOntology#> .\n@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .\n@prefix idan: <http://www.example.org/IDAN3#> .\n@prefix t:    <http://www.w3.org/2006/time#> .\n@prefix logi:  <http://tio.models.tmforum.org/tio/v3.2.0/LogicalOperators#> .\n@prefix quan: <http://tio.models.tmforum.org/tio/v3.2.0/QuantityOntology#> .\n@prefix set:  <http://tio.models.tmforum.org/tio/v3.2.0/SetOperators#> .\n@prefix fun:  <http://tio.models.tmforum.org/tio/v3.2.0/FunctionOntology#> .\n@prefix ui: <http://www..example.org/ui#> .\n@prefix mf: <http://www..example.org/mf#> .\n@prefix cem: <http://tio.labs.tmforum.org/tio/v1.0.0/CatalystExtensionModel#> .\n@prefix   iv: <http://tio.models.tmforum.org/tio/v3.2.0/IntentValidity#> .\n# intent\nidan:IR3_1_Power\n  a icm:Intent ;\n  cem:layer \"'resource'\" ;\n  icm:hasExpectation idan:ER3_1_1,\n                     idan:ER3_1_2\n.\n# targets\nidan:TR3_1_1\n  a icm:Target ;\n  icm:chooseFrom [ set:resourcesOfType  idan:RAN  ] \n.\n# we need certain performance/QoE properties for the service\nidan:ER3_1_1\n  a icm:PropertyExpectation ;\n  icm:target idan:TR3_1_1 ;\n  logi:allOf [rdfs:member idan:CR3_1_1 ] #syntax error\n.\n# utility\n# utility function for latency\nidan:UR3_1_1\n  a mf:LogisticFunction ;\n  a ui:Utility ;\n  mf:functionInput idan:Powerconsumption ;\n  mf:midpoint 20;\n  mf:supremum 1.0 ;\n  mf:logisticGrowth -1.6 ;\n  iv:validIf [ a icm:Condition; #syntax error\n               quan:atLeast [ idan:Powerconsumption [ rdf:value 5 ] ];\n                quan:atMost [ idan:Powerconsumption [ rdf:value 50 ] ]\n             ] \n.\n# conditions\nidan:CR3_1_1\n  a icm:Condition ;\n  rdfs:label \"'1. Power consumption per square meter < 1.2'\" ;\n  quan:smaller [ idan:Powerconsumption\n                 [ rdf:value \"1.2\"^^xsd:decimal ;\n                   icm:unit80000 \"'kwh'\" ]\n               ] ;\n  ui:utility idan:UR3_1_1 ;\n.\n# reporting\n# event for time-based reporting. Triggereing every 5 minutes\nidan:EventR3_1_1\n  a rdfs:Class ;\n  rdfs:subClassOf imo:Event ;\n  logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventR3_1_1 ;\n                                          rdfs:member idan:IR3_1_Power ]]  ,\n                    [t:hasDuration \"'PT5M'\"^^xsd:duration ] ;\n            t:before [ t:hasBeginning imo:Now ] ;\n         ] ;\n  imo:eventFor idan:IR3_1_Power\n.\nidan:ER3_1_2\n  a icm:ReportingExpectation ;\n  icm:target idan:IR3_1_Power  ;\n  icm:reportDestination [ rdfs:member idan:IMF_Customer1 ] ;\n  icm:reportTriggers [ rdfs:member imo:IntentRejected ; \n                       rdfs:member imo:IntentAccepted ;\n                       rdfs:memner imo:IntentDegrades ;\n                       rdfs:member imo:IntentComplies ;\n                       rdfs:member imo:IntentRemoval ;\n                       rdfs:member idan:EventR3_1_1 ]\n.",
+    "@schemaLocation": "https://mycsp.com:8080/tmf-api/schema/Common/TurtleExpression.schema.json"
+  },
+  "lifecycleStatus": "Created",
+  "@baseType": "Intent",
+  "validFor": {
+    "startDateTime": "2022-04-12T23:20:50.52Z",
+    "endDateTime": "2023-04-12T23:20:50.52Z"
+  },
+  "@type": "Intent",
+  "lastUpdate": "2022-01-23T04:56:07.000+00:00",
+  "name": "IR3_1_Power",
+  "description": "IR3_1_Power",
+  "creationDate": "2022-01-23T04:56:07.000+00:00",
+  "@schemaLocation": "https://mycsp.com:8080/tmf-api/schema/Common/TurtleExpression.schema.json",
+  "version": "1"
+}

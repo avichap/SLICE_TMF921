@@ -77,7 +77,7 @@ idan:CR1_1_1
   ui:utility idan:UR1_1_1 ;
   quan:greater [ idan:RanThroughput
                  [ rdf:value "5"^^xsd:decimal ;
-				   icm:unit80000 "'MB/s'"] 
+                   icm:unit80000 "'MB/s'"] 
                ];
   ui:utility idan:UR1_1_2
 .
@@ -88,10 +88,10 @@ idan:CR1_1_1
 idan:EventR1_1_1
   a rdfs:Class ;
   rdfs:subClassOf imo:Event ;
-  logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventB1_1 ;
-                                              rdfs:member idan:IB1_Construction_1 ]]  ,
-                        [t:hasDuration "'PT5M'"^^xsd:duration ] ;
-			 t:before [ t:hasBeginning imo:Now ] ;
+  logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventR1_1_1 ;
+                                          rdfs:member idan:IR1_1_Construction ]]  ,
+                    [t:hasDuration "'PT5M'"^^xsd:duration ] ;
+            t:before [ t:hasBeginning imo:Now ] ;
          ] ;
   imo:eventFor idan:IR1_1_Construction
 .
@@ -104,7 +104,7 @@ idan:ER1_1_2
                        rdfs:member imo:IntentAccepted ;
                        rdfs:memner imo:IntentDegrades ;
                        rdfs:member imo:IntentComplies ;
-					   rdfs:member imo:IntentRemoval ;
-					   rdfs:member idan:EventR1_1_1 ]
+                       rdfs:member imo:IntentRemoval ;
+                       rdfs:member idan:EventR1_1_1 ]
 .
 
