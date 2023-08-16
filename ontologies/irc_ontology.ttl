@@ -1,0 +1,77 @@
+# IRC Ontology Version 1.0.0
+# baseURI: <http://ontology.irc.huawei.com/co/v1.0.0/CommonOntology#> 
+
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix icm: <http://tio.labs.tmforum.org/tio/v1.0.0/IntentCommonModel/> .
+
+<http://io.irc.huawei.com/Io/v1.0.0/IntentExtensionModel/>
+   rdf:type owl:Ontology ;
+   rdfs:label "Multi-objective optimization"@en ;
+.
+## Objects
+:Metric
+   rdf:type rdfs:Class ;
+   rdfs:label "Metric"@en ;
+   rdfs:comment "This is a metric"@en ;
+.
+
+## Properties
+:maximise 
+   rdf:instanceof rdf:Property ;
+   rdfs:domain icm:ExpectationParam ;
+   rdfs:range icm:ExpectationParam ;
+   rdfs:label "Maximise"@en ;
+   rdfs:comment "The maximise property is used as qualifier to maximise param."@en ;
+.
+:keep 
+   rdf:instanceof rdf:Property ;
+   rdfs:domain icm:ExpectationParam ;
+   rdfs:range icm:ExpectationParam ;
+   rdfs:label "Keep"@en ;
+   rdfs:comment "The keep property is used as qualifier to keep param."@en ;
+.
+
+## Individuals
+:throughput
+   rdf:type :Metric ;
+   rdfs:label "throughput"@en ;
+   rdfs:literal "KPI_NR_User_Downlink_Average_Throughput";
+.   
+:coverage
+   rdf:type :Metric ;
+   rdfs:label "coverage"@en ;
+   rdfs:literal "KPI_Coverage";
+.   
+:rrc
+   rdf:type :Metric ;
+   rdfs:label "RRC suscess rate"@en ;
+   rdfs:literal "KPI_rrc_setup_success_rate";
+.
+:erab
+   rdf:type :Metric ;
+   rdfs:label "E RAB suscess rate"@en ;
+   rdfs:literal "KPI_E_RAB_Setup_Success_Rate";
+.
+:drop_rate
+   rdf:type :Metric ;
+   rdfs:label "Service Drop Rate"@en ;
+   rdfs:literal "KPI_Service_Drop_Rate";
+.
+:intra
+   rdf:type :Metric ;
+   rdfs:label "Intra frequency handover suscess rate"@en ;
+   rdfs:literal "KPI_Intra_Frequency_Handover_Out_Success_Rate";
+.
+:inter
+   rdf:type :Metric ;
+   rdfs:label "Intra frequency handover suscess rate"@en ;
+   rdfs:literal "KPI_Inter_Frequency_Handover_Out_Success_Rate";
+.
+:DL_traffic
+   rdf:type :Metric ;
+   rdfs:label "Downlink traffic"@en ;
+   rdfs:literal "KPI_Downlink_Traffic_Volume";
+.
+
