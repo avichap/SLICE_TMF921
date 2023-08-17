@@ -5,7 +5,7 @@
                 "name": "local-mongodb-connector",
                 "label": "local-mongodb-connector",
                 "credentials": {
-                    "uri": "mongodb://185.190.206.133:27017/tmf"
+                    "uri": "mongodb://root:Park459@mongo:27017/tmf?authSource=admin"
                 }
             }
         ]
