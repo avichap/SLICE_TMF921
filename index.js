@@ -69,13 +69,6 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   // initilization rather than getting it each time an intent is created or deleted
   soUtils.storeSoTokenAfterLogin();
 
-  // Monitor issues that are reported by the SA in issue repo of graphDB
-  var timerId = setTimeout(function monitorIssues() {
-    console.log("monitorIssuesInterval expired, checking graphDb now");
-    timerId = setTimeout(monitorIssues, monitorIssuesInterval * 1000);
-    saUtils.monitorIssuesGraphDb();
-
-  }, monitorIssuesInterval * 1000);
   /* XXXXXXXXXXXXX Ericsson IRC - End  XXXXXXXXXXXXXXXx*/
 
   // Start the server
