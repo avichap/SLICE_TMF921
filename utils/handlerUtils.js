@@ -19,6 +19,7 @@ const $rdf = require('rdflib');
 const uuid = require('uuid');
 const notificationUtils = require('../utils/notificationUtils');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const handlerUtils23 = require('../utils/handlerUtils23');
 
 var spec = null;
 var swaggerDoc = null;
@@ -388,6 +389,12 @@ function insertIntentReport(name,report,req) {
       cleanmessageid(message);
       //generates the intentreport creation event
       notificationUtils.publish(req1,message);
+
+      //////////////////////////////
+      //// port report to python 
+      handlerUtils23.postPythonRI(req.originalUrl+'/'+message.intent.id+'/intentReport',message.id,message);
+      ///////////////////////////////////
+
     })
     .catch((error) => {
       console.log("createReport: error=" + error);
@@ -494,7 +501,6 @@ function sendIntentReport(name,filename,req) {
 //  inside the previous step as async
 //  wait(10000)
   console.log('Posted report: '+name)
-
 });
 
 }
@@ -790,7 +796,7 @@ function createIssue(serviceId,id) {
 function checkandSendReport(payload,req) {
   var filename;
  //Provisioning flow
-  //S1R1 -> B1R2
+ //S3 -> R31 -> get R3R1
 
   if (payload.indexOf("S1R1")>0){ // check whether it's a resource intent
      filename = 'B1R2_Intent_Degraded.ttl'
@@ -818,46 +824,6 @@ function checkandSendReport(payload,req) {
       console.log('log: B1 Report Compliant sent');
   }
 
-//Degradation floww
- 
-  //incident -> R1R3
-  else if (payload.indexOf("incident")>0){ // check whether it's a resource intent
-    filename = 'R1R3_Intent_Issue.ttl'
-    sendIntentReportandFindR1('R1R3_Intent_Issue',filename,req);
-    console.log('log: R1 Report Issue sent');
-  }
-  
-  //R1R3 -> S1R4
-  else if (payload.indexOf("R1R3")>0){ // check whether it's a resource intent
-      filename = 'S1R4_Intent_Issue.ttl'
-      sendIntentReportandFindID('S1R4_Intent_Issue',filename,req);
-      console.log('log: S1 Report Issue sent');
-  }
-
-  //S1R4 -> B1R5
-  else if (payload.indexOf("S1R4")>0){ // check whether it's a resource intent
-    filename = 'B1R5_Intent_Issue.ttl'
-    sendIntentReportandFindID('B1R5_Intent_Issue',filename,req);
-    console.log('log: B1 Report Issue sent');
-  }
-
-  //R1R4 -> S1R5
-  else if (payload.indexOf("R1R4")>0){ // check whether it's a resource intent
-    filename = 'S1R5_Intent_Compliant.ttl'
-    sendIntentReportandFindID('S1R5_Intent_Compliant',filename,req);
-    console.log('log: S1 Report Patch sent');
-  }
-  
-  //S1R5 -> B1R6
-  else if (payload.indexOf("S1R5")>0){ // check whether it's a resource intent
-      filename = 'B1R6_Intent_Compliant.ttl'
-      sendIntentReportandFindID('B1R6_Intent_Compliant',filename,req);
-      console.log('log: B1 Report patch sent');
-  }
-
-
-
- 
 }
 
 module.exports = { 

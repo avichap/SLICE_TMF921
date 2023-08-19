@@ -98,11 +98,7 @@ exports.createIntent = async function(req, res, next) {
             }
 /* XXXXXXXXXXXXX Ericsson IRC - End  XXXXXXXXXXXXXXXx*/
 
-/* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
-    //Call the python server 
-    handlerUtils23.postPythonRI(req,payload.id);
-/* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
-    
+
           })
           .catch((error) => {
             console.log("createIntent: error=" + error);

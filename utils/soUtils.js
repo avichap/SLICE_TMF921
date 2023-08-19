@@ -17,6 +17,7 @@ const mongoUtils = require('./mongoUtils');
 const intentService = require('../service/IntentService');
 const $rdf = require('rdflib');
 const uuid = require('uuid');
+const fetch = require('node-fetch');
 const notificationUtils = require('./notificationUtils');
 
 var spec = null;

@@ -30,8 +30,9 @@ var graphDBContext = null;
 // Functions returns the expressionLanguage         //
 // property from theintent request                  //  
 //////////////////////////////////////////////////////
-function postPythonRI(req,id) {
+function postPythonRI(url,id,expression) {
     var conf = readConf();
+    console.log('XXX: In 23 '+conf.pythonServer);
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
          if (this.readyState == 4 && this.status == 200) {
@@ -40,11 +41,11 @@ function postPythonRI(req,id) {
              //alert(this.responseText);
          }
     };
-    xhttp.open("POST", conf.pythonServer + req.originalUrl, true);
+    xhttp.open("POST", conf.pythonServer + url, true);
     xhttp.setRequestHeader("Content-type", "application/json");
     xhttp.setRequestHeader("accept", "application/json");
     var payload = {
-      expression: req.body.expression,
+      expression: expression,
       id: id
     }  
     payload = JSON.stringify(payload); 

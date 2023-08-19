@@ -71,7 +71,7 @@ idan:EventR3_1_1
   rdfs:subClassOf imo:Event ;
   logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventR3_1_1 ;
                                           rdfs:member idan:IR3_1_Power ]]  ,
-                    [t:hasDuration "'PT5M'"^^xsd:duration ] ;
+                    [t:hasDuration idan:5M ] ;
             t:before [ t:hasBeginning imo:Now ] ;
          ] ;
   imo:eventFor idan:IR3_1_Power

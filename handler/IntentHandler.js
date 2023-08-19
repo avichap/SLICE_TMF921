@@ -37,22 +37,39 @@ exports.processIntent = function(req) {
   const expression = handlerUtils.getExpression(req);
 
   //From expression extract triples and load the data in GraphDB 
-  handlerUtils.extractTriplesandKG(expression,`insert`,'text/turtle','R1');
+  handlerUtils.extractTriplesandKG(expression,`insert`,'text/turtle','R3_1');
   
+    /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
+    //Call the python server 
+    handlerUtils23.postPythonRI(req.originalUrl,req.body.id,req.body);
+  /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
+
   var filename;
-//we return the following reports
-// 1. Intent Accepted
+  /// Test R31 process
+  if (expression.indexOf("R3_1") >= 0) {
 
-  filename = 'R1R1_Intent_Accepted.ttl'
-  handlerUtils.sendIntentReport('R1R1_Intent_Accepted',filename,req);
-  console.log('log: R1 Report Accepted sent');
+    // 1. Intent Accepted
+    filename = 'R31R1_Intent_Accepted'
+    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
+    console.log(`log: ${filename} sent`);
+    
+    // 2. Intent Degraded
+    filename = 'R31R2_Intent_Compliant'
+    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
+    console.log(`log: ${filename} sent`);
 
-// 1. Intent Accepted
-//handlerUtils.wait(60000);
+ }
 
-filename = 'R1R2_Intent_Compliant.ttl'
-handlerUtils.sendIntentReport('R1R2_Intent_Compliant',filename,req);
-console.log('log: R1 Report Compliant sent');
+  /// Test R31 process
+  if (expression.indexOf("R1_1") >= 0) {
+    //we return the following reports
+    // 1. Intent Accepted
+
+    filename = 'R1R1_Intent_Accepted.ttl'
+    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
+    console.log(`log: ${filename} sent`);
+  }
+
 };
 
 exports.patchIntent = function(req,old_expression) {

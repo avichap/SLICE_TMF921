@@ -15,6 +15,7 @@ const $rdf = require('rdflib')
 const notificationUtils = require('../utils/notificationUtils');
 const {TError, TErrorEnum, sendError} = require('../utils/errorUtils');
 const handlerUtils = require('../utils/handlerUtils');
+const handlerUtils23 = require('../utils/handlerUtils23');
 const Intent = require('../controllers/Intent');
 
 // Initialize parameters to be processed in service intent, the values 
@@ -59,11 +60,16 @@ exports.processIntent = function(req) {
     //From expression extract triples and load the intent in GraphDB 
   handlerUtils.extractTriplesandKG(expression, `insert`, 'text/turtle',name);
 
-  createIntentReport(req);
+  createIntentReport(req,name);
   var id = req.body.id;
   
   sendCreateServiceOrder(id,serviceOrder);
 
+  /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
+    //Call the python server 
+    handlerUtils23.postPythonRI(req.originalUrl,id,req.body);
+  /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
+    
 };
 
 function sendCreateServiceOrder(id,serviceOrder) {
@@ -101,23 +107,60 @@ function sendCreateServiceOrder(id,serviceOrder) {
 }
 
 
-function createIntentReport(req) {
+function createIntentReport(req,name) {
   var filename;
-  // 1. Intent Accepted
-  filename = 'S1R1_Intent_Accepted.ttl'
-  handlerUtils.sendIntentReport('S1R1_Intent_Accepted', filename, req);
-  console.log('log: S1 Report Accepted sent');
+  if (name.indexOf("S1") >= 0) {
 
+     // 1. Intent Accepted
+     filename = 'S1R1_Intent_Accepted.ttl'
+     handlerUtils.sendIntentReport('S1R1_Intent_Accepted', filename, req);
+     console.log('log: S1 Report Accepted sent');
 
-  // 2. Intent Degraded
-  filename = 'S1R2_Intent_Degraded.ttl'
-  handlerUtils.sendIntentReport('S1R2_Intent_Degraded', filename, req);
-  console.log('log: S1 Report Degraded sent');
-  // 3. The send the S1 intent
-  //just needed to test without symphonica
-  var filename = 'R1_catalyst_resource_intent_slice.ttl'
-  handlerUtils.postIntent('R1_Intent_Slice_Core',filename,req);
-  console.log('log: S1 Intent POSTed');
+     // 2. Intent Degraded
+     filename = 'S1R2_Intent_Degraded.ttl'
+     handlerUtils.sendIntentReport('S1R2_Intent_Degraded', filename, req);
+     console.log('log: S1 Report Degraded sent');
+     // 3. The send the S1 intent
+     //just needed to test without symphonica
+     var filename = 'R1_catalyst_resource_intent_slice.ttl'
+     handlerUtils.postIntent('R1_Intent_Slice_Core',filename,req);
+     console.log('log: R1-1 Intent POSTed');
+  }
+  if (name.indexOf("S2") >= 0) {
+
+    // 1. Intent Accepted
+    filename = 'S1R1_Intent_Accepted.ttl'
+    handlerUtils.sendIntentReport('S1R1_Intent_Accepted', filename, req);
+    console.log('log: S1 Report Accepted sent');
+
+    // 2. Intent Degraded
+    filename = 'S1R2_Intent_Degraded.ttl'
+    handlerUtils.sendIntentReport('S1R2_Intent_Degraded', filename, req);
+    console.log('log: S1 Report Degraded sent');
+    // 3. The send the S1 intent
+    //just needed to test without symphonica
+    var filename = 'R1_catalyst_resource_intent_slice.ttl'
+    handlerUtils.postIntent('R1_Intent_Slice_Core',filename,req);
+    console.log('log: R1-1 Intent POSTed');
+ }
+ if (name.indexOf("S3") >= 0) {
+
+     // 1. Intent Accepted
+     filename = 'S3R1_Intent_Accepted'
+     handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
+     console.log(`log: ${filename} sent`);
+
+     // 2. Intent Degraded
+     filename = 'S3R2_Intent_Compliant'
+     handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
+     console.log(`log: ${filename} sent`);
+     
+     // 3. The send the R3 intent
+     //just needed to test without symphonica
+     var filename = 'IR3_1_Power'
+     handlerUtils.postIntent(filename, filename+'.ttl', req);
+     console.log(`log: ${filename} Intent Posted`);
+  }
 }
 
 function extractParamsFromIntent(expression, type) {
