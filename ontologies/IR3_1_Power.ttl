@@ -16,7 +16,8 @@
 # intent
 idan:IR3_1_Power
   a icm:Intent ;
-  cem:layer "'resource'" ;
+  cem:layer idan:resource ;
+  imo:intentOwner idan:RAN ;
   icm:hasExpectation idan:ER3_1_1,
                      idan:ER3_1_2
 .
@@ -71,7 +72,7 @@ idan:EventR3_1_1
   rdfs:subClassOf imo:Event ;
   logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventR3_1_1 ;
                                           rdfs:member idan:IR3_1_Power ]]  ,
-                    [t:hasDuration idan:5M ] ;
+                    [t:hasDuration idan:5M  ] ;
             t:before [ t:hasBeginning imo:Now ] ;
          ] ;
   imo:eventFor idan:IR3_1_Power

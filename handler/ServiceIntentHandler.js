@@ -160,6 +160,14 @@ function createIntentReport(req,name) {
      var filename = 'IR3_1_Power'
      handlerUtils.postIntent(filename, filename+'.ttl', req);
      console.log(`log: ${filename} Intent Posted`);
+
+     var filename = 'IR3_3_Power'
+     handlerUtils.postIntent(filename, filename+'.ttl', req);
+     console.log(`log: ${filename} Intent Posted`);
+
+     var filename = 'IR3_2_Power'
+     handlerUtils.postIntent(filename, filename+'.ttl', req);
+     console.log(`log: ${filename} Intent Posted`);
   }
 }
 

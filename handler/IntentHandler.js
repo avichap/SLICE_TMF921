@@ -60,6 +60,34 @@ exports.processIntent = function(req) {
 
  }
 
+if (expression.indexOf("R3_2") >= 0) {
+
+  // 1. Intent Accepted
+  filename = 'R32R1_Intent_Accepted'
+  handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
+  console.log(`log: ${filename} sent`);
+  
+  // 2. Intent Degraded
+  filename = 'R32R2_Intent_Compliant'
+  handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
+  console.log(`log: ${filename} sent`);
+
+}
+
+if (expression.indexOf("R3_3") >= 0) {
+
+  // 1. Intent Accepted
+  filename = 'R33R1_Intent_Accepted'
+  handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
+  console.log(`log: ${filename} sent`);
+  
+  // 2. Intent Degraded
+  filename = 'R33R2_Intent_Compliant'
+  handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
+  console.log(`log: ${filename} sent`);
+
+}
+
   /// Test R31 process
   if (expression.indexOf("R1_1") >= 0) {
     //we return the following reports

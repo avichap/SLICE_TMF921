@@ -27,7 +27,7 @@ idan:IS3_Power_Intent_Accepted
   icm:handlingState icm:StateAccepted ;
   icm:updateState icm:StateNoUpdate ;
   icm:reportNumber 1 ;
-  cem:layer "'service'" ;
+  cem:layer idan:service ;
   icm:hasExpectationReport idan:S3R1E1_property ,
                            idan:S3R1E2_reporting ; 
 .
