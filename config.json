@@ -9,5 +9,5 @@
 "alarm_url_hal": "/api/",
 
 "strict_schema": true,
-"pythonServer": "http://intent-py:8088"
+"pythonServer": "http://localhost:8088"
 }

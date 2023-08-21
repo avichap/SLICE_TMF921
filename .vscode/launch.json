@@ -5,9 +5,8 @@
         "type": "node",
         "request": "launch",
         "name": "Launch Program",
-        "runtimeVersion": "12.22.12",
         "skipFiles": ["<node_internals>/**"],
-        "program": "${workspaceFolder}/index.js"
+        "program": "${workspaceFolder}\\index.js"
       }
     ]
   }
