@@ -41,8 +41,9 @@ exports.processIntent = function(req) {
   
     /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
     //Call the python server 
-    handlerUtils23.postPythonRI(req.originalUrl,req.body.id,req.body);
-  /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
+//    handlerUtils23.postPythonRI(req.originalUrl,req.body.id,req.body);
+   handlerUtils23.process_intents(expression,req.body.id,req.body.version)
+/* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
 
   var filename;
   /// Test R31 process
@@ -158,7 +159,8 @@ exports.deleteIntentbyName = function(name,req,serviceIntent) {
       }
 /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
     //Call the python server 
-    handlerUtils23.deletePythonRI(req,x.id);
+//    handlerUtils23.deletePythonRI(req,x.id);
+    handlerUtils23.delete_intents(name)
 /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
     })
   })

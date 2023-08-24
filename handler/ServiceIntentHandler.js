@@ -17,6 +17,9 @@ const {TError, TErrorEnum, sendError} = require('../utils/errorUtils');
 const handlerUtils = require('../utils/handlerUtils');
 const handlerUtils23 = require('../utils/handlerUtils23');
 const Intent = require('../controllers/Intent');
+const intentHandler = require('./IntentHandler')
+
+const S3_children = ['IR3_1_Power','IR3_3_Power','IR3_2_Power']
 
 // Initialize parameters to be processed in service intent, the values 
 // are modified later based on what is received in actual intent
@@ -49,11 +52,11 @@ exports.processIntent = function(req) {
     serviceOrder = 'a.json';
     name = 'S1;'
   }
-  if (expression.indexOf("S2") > 0) {
+  else if (expression.indexOf("S2") > 0) {
     serviceOrder = 'b.json';
     name = 'S2;'
   }
-  if (expression.indexOf("S3") > 0) {
+  else if (expression.indexOf("S3") > 0) {
     serviceOrder = 'service_order_CSP_USAGE_CONDITION_CREATE.json';
     name = 'S3;'
   }
@@ -67,7 +70,9 @@ exports.processIntent = function(req) {
 
   /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
     //Call the python server 
-    handlerUtils23.postPythonRI(req.originalUrl,id,req.body);
+//    handlerUtils23.postPythonRI(req.originalUrl,id,req.body);
+  handlerUtils23.process_intents(expression,id,req.body.version)
+
   /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
     
 };
@@ -92,7 +97,7 @@ function sendCreateServiceOrder(id,serviceOrder) {
       createOrderJson.orderItems[0].service.characteristics[1].value = "5";
     }
 
-    createOrderJson.orderItems[0].service.characteristics[2].value = serviceIntentParams.site.toString();
+    //createOrderJson.orderItems[0].service.characteristics[2].value = serviceIntentParams.site.toString();
     
     console.log("SERVICE ORDER = " + JSON.stringify(createOrderJson));
 
@@ -109,6 +114,7 @@ function sendCreateServiceOrder(id,serviceOrder) {
 
 function createIntentReport(req,name) {
   var filename;
+  var children;
   if (name.indexOf("S1") >= 0) {
 
      // 1. Intent Accepted
@@ -142,9 +148,8 @@ function createIntentReport(req,name) {
     var filename = 'R1_catalyst_resource_intent_slice.ttl'
     handlerUtils.postIntent('R1_Intent_Slice_Core',filename,req);
     console.log('log: R1-1 Intent POSTed');
- }
- if (name.indexOf("S3") >= 0) {
-
+  }
+  if (name.indexOf("S3") >= 0) {
      // 1. Intent Accepted
      filename = 'S3R1_Intent_Accepted'
      handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
@@ -157,17 +162,12 @@ function createIntentReport(req,name) {
      
      // 3. The send the R3 intent
      //just needed to test without symphonica
-     var filename = 'IR3_1_Power'
-     handlerUtils.postIntent(filename, filename+'.ttl', req);
-     console.log(`log: ${filename} Intent Posted`);
-
-     var filename = 'IR3_3_Power'
-     handlerUtils.postIntent(filename, filename+'.ttl', req);
-     console.log(`log: ${filename} Intent Posted`);
-
-     var filename = 'IR3_2_Power'
-     handlerUtils.postIntent(filename, filename+'.ttl', req);
-     console.log(`log: ${filename} Intent Posted`);
+     children = [...S3_children]
+     children.forEach(x => {
+       handlerUtils.postIntent(x, x+'.ttl', req);
+       console.log(`log: ${x} Intent Posted`);
+     }
+    )
   }
 }
 
@@ -269,18 +269,58 @@ function extractParamsFromIntent(expression, type) {
 //it deletes the service order in SO over TMF641,
 //reads the intent expression from mongo, parses the expression into
 //triples and then deletes these triples from the graphdb.
-exports.deleteIntent = function(query, resourceType) {
-  const soUtils = require('../utils/soUtils');
+exports.deleteIntent = function(query, resourceType,intentname,req) {
+  var serviceOrder;
+  var name;
+  var children
+  if (intentname.indexOf("S1") > 0) {
+    serviceOrder = 'a.json';
+    name = 'S1;'
+  }
+  else if (intentname.indexOf("S2") > 0) {
+    serviceOrder = 'b.json';
+    name = 'S2;'
+  }
+  else if (intentname.indexOf("S3") > 0) {
+    serviceOrder = 'service_order_CSP_USAGE_CONDITION_DELETE.json';
+    name = 'S3;'
+    children = [...S3_children]
+}
+  
+  sendDeleteServiceOrder(serviceOrder,query.id)
 
-  fs.readFile('./serviceorders/service_order_connectivity_ptp_DELETE.json', 'utf8', (err, deleteOrder) => {
+  console.log('query.id: ' + query.id)
+  console.log('resourceType: ' + resourceType)
+  //reads intent from mongo and then deletes objects from KG.  All in one function as async
+  handlerUtils.getIntentExpressionandDeleteKG(query, resourceType);
+  //delete children intent
+  children.forEach(x => {
+    intentHandler.deleteIntentbyName(x,req,false);
+    console.log(`log: ${x} Delete`);
+    }
+  )
+/* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
+    //Call the python server 
+//    handlerUtils23.deletePythonRI(req,query.id);
+handlerUtils23.delete_intents(intentname)
+
+/* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
+
+};
+
+function sendDeleteServiceOrder(serviceOrder,id) {
+  const soUtils = require('../utils/soUtils');
+  
+  fs.readFile(`./serviceorders/${serviceOrder}`, 'utf8', (err,deleteOrder) => {
+
     if (err) {
       console.error('unable to read delete service order json file due to error:', err);
       return;
     }
-
+ 
     var deleteOrderJson = JSON.parse(deleteOrder);
     //add the service intent id
-    deleteOrderJson.orderItems[0].service.publicIdentifier = query.id;
+    deleteOrderJson.orderItems[0].service.publicIdentifier = id;
     console.log("SERVICE ORDER = " + JSON.stringify(deleteOrderJson));
 
     try {
@@ -291,13 +331,8 @@ exports.deleteIntent = function(query, resourceType) {
       return;
     }
   });
-
-  console.log('query.id: ' + query.id)
-  console.log('resourceType: ' + resourceType)
-  //reads intent from mongo and then deletes objects from KG.  All in one function as async
-  handlerUtils.getIntentExpressionandDeleteKG(query, resourceType);
-};
-
+  
+}
 // This function is called from the SI once the intentReport has been deleted from MOngo
 //it reads the intentReport expression from mongo, parse the expresion into
 //triples and then deletes these triples from the graphdb.

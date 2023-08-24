@@ -1,0 +1,35 @@
+{
+    "externalId": "external-ID_SentToNBI_BSS_ID",
+    "priority": "4",
+    "category": "CSP USAGE CONDITION - DELETE",
+    "source": "POSTMAN",
+    "orderType": "TERMINATE",
+    "relatedParty": [
+        {
+            "id": "SITE_1",
+            "source": "BSS",
+            "name": "SITE_1",
+            "role": "customer"
+        }
+    ],
+    "orderItems": [
+        {
+            "action": "Remove",
+            "service": {
+                "serviceSpecification": {
+                    "code": "CSP_USAGE_CONDITION",
+                    "version": "1.0"
+                },
+
+                "publicIdentifier": "serviceIntentId_CSP_USAGE_CONDITION_SITE_1"
+            },
+            "id": "1"
+        }
+    ],
+    "extraValues": [
+        {
+            "name": "idan3",
+            "value": "true"
+        }
+    ]
+}

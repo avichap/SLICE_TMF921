@@ -392,7 +392,8 @@ function insertIntentReport(name,report,req) {
 
       //////////////////////////////
       //// port report to python 
-      handlerUtils23.postPythonRI(req.originalUrl+'/'+message.intent.id+'/intentReport',message.id,message);
+      //handlerUtils23.postPythonRI(req.originalUrl+'/'+message.intent.id+'/intentReport',message.id,message);
+      handlerUtils23.process_reports(message.expression.expressionValue,message.intent.id,message.id)
       ///////////////////////////////////
 
     })

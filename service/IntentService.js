@@ -157,7 +157,7 @@ exports.deleteIntent = function(req, res, next) {
             intentHandler.deleteIntentReports(id, 'IntentReport');
 
             // calls the intent handler for the deletetion of the triples in the knowledge base
-            intentHandler.deleteIntent(query, resourceType);
+            intentHandler.deleteIntent(query, resourceType,doc.name);
 
           }
 //for the time being use the common handler for the B1 intent
@@ -166,7 +166,7 @@ exports.deleteIntent = function(req, res, next) {
             intentHandler.deleteIntentReports(id, 'IntentReport');
 
             // calls the intent handler for the deletetion of the triples in the knowledge base
-            intentHandler.deleteIntent(query, resourceType);
+            intentHandler.deleteIntent(query, resourceType,doc.name);
           }
           /* XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
 
@@ -177,7 +177,7 @@ exports.deleteIntent = function(req, res, next) {
             serviceIntentHandler.deleteIntentReports(id, 'IntentReport');
 
             // calls the intent handler for the deletetion of the triples in the knowledge base
-            serviceIntentHandler.deleteIntent(query, resourceType);
+            serviceIntentHandler.deleteIntent(query, resourceType,doc.name,req);
           }
           /* XXXXXXXXXXXXX Ericsson IRC - End  XXXXXXXXXXXXXXXx*/
           // return db for next promise
@@ -201,24 +201,9 @@ exports.deleteIntent = function(req, res, next) {
     })
     .catch(error => sendDoc(res, 204, {}));
 
-///////////////////////////
-//now delete S1 qnd R1 too//
-////////////////////////////
-
-  //R1
-  intentHandler.deleteIntentbyName('R1_PATCH_Intent_Slice_Core',req,false);
-  //R1
-  intentHandler.deleteIntentbyName('R1_Intent_Slice_Core',req,false);
-  //S1
-  intentHandler.deleteIntentbyName('S1_Intent_ConnectivityService',req,true);
 
   //delete all data from KG in case there is something still there
   handlerUtils.deleteAllKGData();
-
-  /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
-    //Call the python server 
-    handlerUtils23.deletePythonRI(req);
-/* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
 
 };
 

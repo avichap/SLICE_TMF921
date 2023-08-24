@@ -6,9 +6,9 @@
     "orderType": "CREATE",
     "relatedParty": [
         {
-            "id": "CUSTOMER1_HELMETSERVICE",
+            "id": "SITE_1",
             "source": "BSS",
-            "name": "CUSTOMER1_HELMETSERVICE",
+            "name": "SITE_1",
             "role": "customer"
         }
     ],
@@ -31,10 +31,10 @@
                     },
                     {
                         "name": "SiteCode",
-                        "value": "SiteCode"
+                        "value": "SITE_1"
                     }
                 ],
-                "publicIdentifier": "CSP_USAGE_CONDITION1",
+                "publicIdentifier": "serviceIntentId_CSP_USAGE_CONDITION_SITE_1",
                 "serviceRelationship": []
             },
             "id": "1"
