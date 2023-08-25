@@ -565,61 +565,6 @@ function sendIntentReportandFindID(name,filename,req) {
 });
 }
 
-////////////////////////////////////////////////////////
-// Function used to send intent reports               //
-////////////////////////////////////////////////////////
-function sendIntentReportandFindR1(name,filename,req) {
-  fs.readFile('./ontologies/'+filename, 'utf8', (err, data) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
- //   console.log(data);
- data = addTimestamp(data);
-
-  //2. insert report in grapbdb
-  extractTriplesandKG(data,`insert`,'text/turtle');
-
- //3. find parentid
-  var parentId;
-
- var query = mongoUtils.getMongoQuery(req);
- query.criteria.name = 'R1_Intent_Slice_Core'
-
- query = swaggerUtils.updateQueryServiceType(query, req,'name');
-
- var resourceType = 'Intent'; 
- const internalError =  new TError(TErrorEnum.INTERNAL_SERVER_ERROR, "Internal database error");
-
- mongoUtils.connect().then(db => {
-   db.collection(resourceType)
-   .find(query.criteria, query.options).toArray()
-   .then(doc => {
-
-     doc.forEach(x => {
-       req.body.id = x.id;
-//3. insert report into mongodb and send notification
-         insertIntentReport(name,data,req);
-         return
-     })
-
-     })
-     .catch(error => {
-       console.log("retrieveIntent: error=" + error);
-       sendError(res, internalError);
-     });
- })
- .catch(error => {
-   console.log("retrieveIntent: error=" + error);
-   sendError(res, internalError);
- });
-
- //4. create event
-//  inside the previous step as async
-
-
-});
-}
 
 function wait(ms){
   var start = new Date().getTime();

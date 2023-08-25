@@ -1,0 +1,71 @@
+{
+    "externalId": "external-ID_SentToNBI_BSS_ID",
+    "priority": "1",
+    "category": "HELMET_SERVICE - S1 DELETE - CONNECTIVITY + VIDEO-SURVEILLANCE + USER-CONNECTION",
+    "orderType": "TERMINATE",
+    "source": "SIMF",
+    "relatedParty": [
+        {
+            "id": "SITE_1",
+            "source": "BSS",
+            "name": "SITE_1",
+            "role": "customer"
+        }
+    ],
+    "orderItems": [
+        {
+            "action": "Remove",
+            "service": {
+                "serviceSpecification": {
+                    "code": "USER-CONNECTION",
+                    "version": "1.0"
+                },
+                "publicIdentifier": "USER-CONNECTION_HELMET_SERVICE"
+            },
+            "id": 1
+        },
+        {
+            "action": "Remove",
+            "service": {
+                "serviceSpecification": {
+                    "code": "VIDEO-SURVEILLANCE",
+                    "version": "1.0"
+                },
+                "publicIdentifier": "VIDEO-SURVEILLANCE_HELMET_SERVICE"
+            },
+            "id": 2,
+            "orderItemRelationships": [
+                {
+                    "id": "1",
+                    "name": "USER-CONNECTION",
+                    "type": "DEPENDENCY"
+                }
+            ]
+        },
+        {
+            "action": "Remove",
+            "service": {
+                "serviceSpecification": {
+                    "code": "CONNECTIVITY",
+                    "version": "1.0"
+                },
+                "category": "CFS",
+                "publicIdentifier": "serviceIntentId_CONNECTIVITY_HELMET_SERVICE"
+            },
+            "id": "3",
+            "orderItemRelationships": [
+                {
+                    "id": "2",
+                    "name": "VIDEO-SURVEILLANCE",
+                    "type": "DEPENDENCY"
+                }
+            ]
+        }
+    ],
+    "extraValues": [
+        {
+            "name": "idan3",
+            "value": "true"
+        }
+    ]
+}

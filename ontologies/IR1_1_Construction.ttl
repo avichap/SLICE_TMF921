@@ -16,7 +16,8 @@
 # intent
 idan:IR1_1_Construction
   a icm:Intent ;
-  cem:layer "'resource'" ;
+  cem:layer idan:resource ;
+  imo:intentOwner idan:RAN ;
   icm:hasExpectation idan:ER1_1_1,
                      idan:ER1_1_2
 .
@@ -90,7 +91,7 @@ idan:EventR1_1_1
   rdfs:subClassOf imo:Event ;
   logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventR1_1_1 ;
                                           rdfs:member idan:IR1_1_Construction ]]  ,
-                    [t:hasDuration "'PT5M'"^^xsd:duration ] ;
+                    [t:hasDuration idan:5M ] ;
             t:before [ t:hasBeginning imo:Now ] ;
          ] ;
   imo:eventFor idan:IR1_1_Construction

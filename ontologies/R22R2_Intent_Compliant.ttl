@@ -19,26 +19,26 @@
 # This intent report is sent on acceptance of the service intnet to the intnet 
 # manager on business level
 # 
-idan:IR23R2_Power_Intent_Compliant
+idan:IR22R2_Power_Intent_Compliant
   a icm:IntentReport ;
   rdfs:comment "'Intent Report after compliant'" ;
-  icm:reportsAbout idan:IR2_3_Power ;
+  icm:reportsAbout idan:IR2_2_Emergency ;
   # put in the live timestamp from the time the report is created:
     icm:reportTimestamp            date_to_be_generated^^xsd:dateTime ;
   icm:handlingState icm:StateCompliant ;
   icm:updateState icm:StateNoUpdate ;
   icm:reportNumber 2 ;
   cem:layer idan:resource ;
-  icm:hasExpectationReport idan:R23R2E1_property ,
-                           idan:R23R2E2_reporting ; 
+  icm:hasExpectationReport idan:R22R2E1_property ,
+                           idan:R22R2E2_reporting ; 
 .
 
 
-idan:R23R2E1_property
+idan:R22R2E1_property
   a icm:ExpectationReport ;
   icm:reportsAbout idan:ES2_energy_consumption_expectation ;
   icm:compliant [ a icm:ConditionReport ;
-                 icm:reportsAbout idan:ES2_energy_profile ;
+                 icm:reportsAbout idan:ES3_energy_profile ;
 				 icm:EnergyProfile [icm:observed [ icm:latestValue 9.8 ;
                                                    icm:unit idan:EC1_unit ;
 									             ];
@@ -49,7 +49,7 @@ idan:R23R2E1_property
 			   
 ##### Reporting Expectation Report ############################################
 #
-idan:R23R2E2_reporting
+idan:R22R2E2_reporting
   a icm:ExpectationReport ;
   icm:reportsAbout idan:ES2_reporting_expectation ;
   icm:reportingIntervalRemaining [ a t:Duration ;

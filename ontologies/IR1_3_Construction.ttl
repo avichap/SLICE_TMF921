@@ -16,7 +16,8 @@
 # intent
 idan:IR1_3_Construction
   a icm:Intent ;
-  cem:layer "'resource'" ;
+  cem:layer idan:resource ;
+  imo:intentOwner idan:EdgeCloud ;
   icm:hasExpectation idan:ER1_3_1,
                      idan:ER1_3_2,
                      idan:ER1_3_3
@@ -74,13 +75,13 @@ idan:EventR1_3_1
   rdfs:subClassOf imo:Event ;
   logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventR1_3_1 ;
                                           rdfs:member idan:IR1_3_Construction ]]  ,
-                    [t:hasDuration "'PT5M'"^^xsd:duration ] ;
+                    [t:hasDuration idan:5M ] ;
             t:before [ t:hasBeginning imo:Now ] ;
          ] ;
   imo:eventFor idan:IR1_3_Construction
 .
 
-idan:ER3_1_3
+idan:ER1_3_3
   a icm:ReportingExpectation ;
   icm:target idan:IR1_1_Construction  ;
   icm:reportDestination [ rdfs:member idan:IMF_Customer1 ] ;

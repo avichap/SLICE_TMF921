@@ -1,0 +1,154 @@
+{
+    "externalId": "external-ID_SentToNBI_BSS_ID",
+    "priority": "4",
+    "category": "HELMET_SERVICE - S1 ADD - CONNECTIVITY + VIDEO-SURVEILLANCE + USER-CONNECTION",
+    "source": "SIMF",
+    "orderType": "CREATE",
+    "relatedParty": [
+        {
+            "id": "SITE_1",
+            "source": "BSS",
+            "name": "SITE_1",
+            "role": "customer"
+        }
+    ],
+    "orderItems": [
+        {
+            "action": "New",
+            "service": {
+                "serviceSpecification": {
+                    "code": "CONNECTIVITY",
+                    "version": "1.0"
+                },
+                "characteristics": [
+                    {
+                        "name": "serviceType",
+                        "value": "Construction"
+                    },
+                    {
+                        "name": "bandwidth",
+                        "value": "1"
+                    }
+                ],
+                "places": [],
+                "publicIdentifier": "serviceIntentId_CONNECTIVITY_HELMET_SERVICE",
+                "serviceRelationship": [
+                    {
+                        "relationshipType": "DEPENDENCY",
+                        "service": {
+                            "id": "",
+                            "source": "SYM-SOM",
+                            "name": "serviceIntentId_CSP_USAGE_CONDITION_SITE_1 (serviceIntentId_CSP_USAGE_CONDITION_SITE_1)",
+                            "publicIdentifier": "serviceIntentId_CSP_USAGE_CONDITION_SITE_1"
+                        }
+                    }
+                ]
+            },
+            "id": "1"
+        },
+        {
+            "action": "New",
+            "service": {
+                "serviceSpecification": {
+                    "code": "VIDEO-SURVEILLANCE",
+                    "version": "1.0"
+                },
+                "characteristics": [
+                    {
+                        "name": "profile",
+                        "value": "1"
+                    },
+                    {
+                        "name": "storage",
+                        "value": "2"
+                    }
+                ],
+                "publicIdentifier": "VIDEO-SURVEILLANCE_HELMET_SERVICE",
+                "serviceRelationship": [
+                    {
+                        "relationshipType": "DEPENDENCY",
+                        "service": {
+                            "id": "",
+                            "source": "SYM-SOM",
+                            "name": "serviceIntentId_CONNECTIVITY_HELMET_SERVICE (serviceIntentId_CONNECTIVITY_HELMET_SERVICE)",
+                            "publicIdentifier": "serviceIntentId_CONNECTIVITY_HELMET_SERVICE"
+                        }
+                    }
+                ]
+            },
+            "id": "2",
+            "orderItemRelationships": [
+                {
+                    "id": "1",
+                    "name": "CONNECTIVITY",
+                    "type": "DEPENDENCY"
+                }
+            ]
+        },
+        {
+            "action": "New",
+            "service": {
+                "serviceSpecification": {
+                    "code": "USER-CONNECTION",
+                    "version": "1.0"
+                },
+                "characteristics": [
+                    {
+                        "name": "userNickname",
+                        "value": "Subscriber4"
+                    },
+                    {
+                        "name": "iccid",
+                        "value": "iccid_NS_87654321"
+                    },
+                    {
+                        "name": "imei",
+                        "value": "imei_NS_87654321"
+                    },
+                    {
+                        "name": "imsi",
+                        "value": "imsi_NS_87654321"
+                    },
+                    {
+                        "name": "msisdn",
+                        "value": "msisdn_NS_87654321"
+                    },
+                    {
+                        "name": "privateMovileNetwork",
+                        "value": "VPN"
+                    },
+                    {
+                        "name": "UEmodel",
+                        "value": "Camara Model NS_35"
+                    }
+                ],
+                "publicIdentifier": "USER-CONNECTION_HELMET_SERVICE",
+                "serviceRelationship": [
+                    {
+                        "relationshipType": "DEPENDENCY",
+                        "service": {
+                            "id": "",
+                            "source": "SYM-SOM",
+                            "name": "serviceIntentId_CONNECTIVITY_HELMET_SERVICE (serviceIntentId_CONNECTIVITY_HELMET_SERVICE)",
+                            "publicIdentifier": "serviceIntentId_CONNECTIVITY_HELMET_SERVICE"
+                        }
+                    }
+                ]
+            },
+            "id": "3",
+            "orderItemRelationships": [
+                {
+                    "id": "2",
+                    "name": "VIDEO-SURVEILLANCE",
+                    "type": "DEPENDENCY"
+                }
+            ]
+        }
+    ],
+    "extraValues": [
+        {
+            "name": "idan3",
+            "value": "true"
+        }
+    ]
+}

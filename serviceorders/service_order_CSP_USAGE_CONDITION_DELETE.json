@@ -2,7 +2,7 @@
     "externalId": "external-ID_SentToNBI_BSS_ID",
     "priority": "4",
     "category": "CSP USAGE CONDITION - DELETE",
-    "source": "POSTMAN",
+    "source": "SIMF",
     "orderType": "TERMINATE",
     "relatedParty": [
         {

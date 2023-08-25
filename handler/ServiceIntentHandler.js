@@ -19,7 +19,10 @@ const handlerUtils23 = require('../utils/handlerUtils23');
 const Intent = require('../controllers/Intent');
 const intentHandler = require('./IntentHandler')
 
+const S1_children = ['IR1_1_Construction','IR1_3_Construction','IR1_2_Construction']
+const S2_children = ['IR2_1_Emergency','IR2_3_Emergency','IR2_2_Emergency']
 const S3_children = ['IR3_1_Power','IR3_3_Power','IR3_2_Power']
+const sendResource = process.env.SEND_RESOURCE_INTENT!==undefined ? process.env.SEND_RESOURCE_INTENT:true
 
 // Initialize parameters to be processed in service intent, the values 
 // are modified later based on what is received in actual intent
@@ -49,11 +52,11 @@ exports.processIntent = function(req) {
   var serviceOrder;
   var name;
   if (expression.indexOf("S1") > 0) {
-    serviceOrder = 'a.json';
+    serviceOrder = 'service_order_HELMET_SERVICE_CREATE.json';
     name = 'S1;'
   }
   else if (expression.indexOf("S2") > 0) {
-    serviceOrder = 'b.json';
+    serviceOrder = 'service_order_ER_SERVICE_CREATE.json';
     name = 'S2;'
   }
   else if (expression.indexOf("S3") > 0) {
@@ -118,36 +121,45 @@ function createIntentReport(req,name) {
   if (name.indexOf("S1") >= 0) {
 
      // 1. Intent Accepted
-     filename = 'S1R1_Intent_Accepted.ttl'
-     handlerUtils.sendIntentReport('S1R1_Intent_Accepted', filename, req);
-     console.log('log: S1 Report Accepted sent');
+     filename = 'S1R1_Intent_Accepted'
+     handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
+     console.log(`log: ${filename} sent`);
 
      // 2. Intent Degraded
-     filename = 'S1R2_Intent_Degraded.ttl'
-     handlerUtils.sendIntentReport('S1R2_Intent_Degraded', filename, req);
-     console.log('log: S1 Report Degraded sent');
+     filename = 'S1R2_Intent_Compliant'
+     handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
+     console.log(`log: ${filename} sent`);
+
      // 3. The send the S1 intent
      //just needed to test without symphonica
-     var filename = 'R1_catalyst_resource_intent_slice.ttl'
-     handlerUtils.postIntent('R1_Intent_Slice_Core',filename,req);
-     console.log('log: R1-1 Intent POSTed');
+    if (sendResource) {
+     children = [...S1_children]
+     children.forEach(x => {
+       handlerUtils.postIntent(x, x+'.ttl', req);
+       console.log(`log: ${x} Intent Posted`);
+     })
+    }
   }
   if (name.indexOf("S2") >= 0) {
 
     // 1. Intent Accepted
-    filename = 'S1R1_Intent_Accepted.ttl'
-    handlerUtils.sendIntentReport('S1R1_Intent_Accepted', filename, req);
-    console.log('log: S1 Report Accepted sent');
+    filename = 'S2R1_Intent_Accepted'
+    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
+    console.log(`log: ${filename} sent`);
 
     // 2. Intent Degraded
-    filename = 'S1R2_Intent_Degraded.ttl'
-    handlerUtils.sendIntentReport('S1R2_Intent_Degraded', filename, req);
-    console.log('log: S1 Report Degraded sent');
+    filename = 'S2R2_Intent_Compliant'
+    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
+    console.log(`log: ${filename} sent`);
     // 3. The send the S1 intent
     //just needed to test without symphonica
-    var filename = 'R1_catalyst_resource_intent_slice.ttl'
-    handlerUtils.postIntent('R1_Intent_Slice_Core',filename,req);
-    console.log('log: R1-1 Intent POSTed');
+    if (sendResource) {
+      children = [...S2_children]
+      children.forEach(x => {
+        handlerUtils.postIntent(x, x+'.ttl', req);
+        console.log(`log: ${x} Intent Posted`);
+      })
+    }
   }
   if (name.indexOf("S3") >= 0) {
      // 1. Intent Accepted
@@ -162,12 +174,13 @@ function createIntentReport(req,name) {
      
      // 3. The send the R3 intent
      //just needed to test without symphonica
-     children = [...S3_children]
-     children.forEach(x => {
-       handlerUtils.postIntent(x, x+'.ttl', req);
-       console.log(`log: ${x} Intent Posted`);
-     }
-    )
+     if (sendResource) {
+       children = [...S3_children]
+       children.forEach(x => {
+         handlerUtils.postIntent(x, x+'.ttl', req);
+         console.log(`log: ${x} Intent Posted`);
+       })
+    }
   }
 }
 
@@ -274,12 +287,14 @@ exports.deleteIntent = function(query, resourceType,intentname,req) {
   var name;
   var children
   if (intentname.indexOf("S1") > 0) {
-    serviceOrder = 'a.json';
+    serviceOrder = 'service_order_HELMET_SERVICE_DELETE.json';
     name = 'S1;'
+    children = [...S1_children]
   }
   else if (intentname.indexOf("S2") > 0) {
-    serviceOrder = 'b.json';
+    serviceOrder = 'service_order_ER_SERVICE_DELETE.json';
     name = 'S2;'
+    children = [...S2_children]
   }
   else if (intentname.indexOf("S3") > 0) {
     serviceOrder = 'service_order_CSP_USAGE_CONDITION_DELETE.json';
@@ -294,17 +309,17 @@ exports.deleteIntent = function(query, resourceType,intentname,req) {
   //reads intent from mongo and then deletes objects from KG.  All in one function as async
   handlerUtils.getIntentExpressionandDeleteKG(query, resourceType);
   //delete children intent
-  children.forEach(x => {
+  if (sendResource) {
+    children.forEach(x => {
     intentHandler.deleteIntentbyName(x,req,false);
     console.log(`log: ${x} Delete`);
-    }
-  )
-/* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
+    })
+  }
+  /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
     //Call the python server 
-//    handlerUtils23.deletePythonRI(req,query.id);
-handlerUtils23.delete_intents(intentname)
-
-/* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
+    //    handlerUtils23.deletePythonRI(req,query.id);
+  handlerUtils23.delete_intents(intentname)
+  /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
 
 };
 
