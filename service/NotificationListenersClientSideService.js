@@ -297,6 +297,9 @@ exports.listenToIntentReportCreateEvent = function(req, res, next) {
 
       payload = swaggerUtils.updatePayloadServiceType(payload, req,'');
 
+      handlerUtils.processIntentReportEvent(payload,req)
+
+
       mongoUtils.connect().then(db => {
         db.collection(resourceType)
           .insertOne(payload)
@@ -307,8 +310,6 @@ exports.listenToIntentReportCreateEvent = function(req, res, next) {
             sendDoc(res, 201, payload);
             notificationUtils.publish(req,payload);
 
-    /* XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
-    // check and send reports
             handlerUtils.checkandSendReport(payload.event.intentReport.expression.expressionValue,req);
 
           })
@@ -317,10 +318,8 @@ exports.listenToIntentReportCreateEvent = function(req, res, next) {
             sendError(res, internalError);
           })
       })
-      .catch((error) => {
-        console.log("listenToIntentReportCreateEvent: error=" + error);
-        sendError(res, internalError);
-      })
+
+
     })
     .catch( error => {
       console.log("listenToIntentReportCreateEvent: error=" + error.toString());

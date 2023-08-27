@@ -13,7 +13,7 @@ const {TError, TErrorEnum, sendError} = require('./utils/errorUtils');
 const app = require('connect')();
 const swaggerTools = require('swagger-tools');
 
-const serverPort = 8080;
+const serverPort = 8092;
 
 const monitorIssuesInterval = 60; // seconds
 

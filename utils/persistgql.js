@@ -114,6 +114,7 @@ function processIntents (intents) {
         variables: {intents}
       }))
     } catch (err) {
+        console.log('error procesing intents:' + intents)      
         return reject(err)
     } 
   })
@@ -124,6 +125,7 @@ function processExpectations (expectations) {
     try {
         resolve(client.mutate({mutation: INSERT_EXPECTATION,variables: {expectations}}))
       } catch (err) {
+        console.log('error procesing expectations:' + expectations)
         return reject(err)
     } 
   })
@@ -160,6 +162,7 @@ function processHierarchy (parent,child) {
       resolve (client.mutate({mutation: INSERT_HIERARCHY,variables: {intentsintents}}))
       }
     } catch (err) {
+      console.log('error procesing hierarchy:' + parent + 'child '+ child)
       return reject(err)
     } 
   })
@@ -175,7 +178,8 @@ function processReports (reports) {
         variables: {reports}
       }))
     } catch (err) {
-        return reject(err)
+      console.log('error procesing reports:' + reports)
+      return reject(err)
     } 
   })
 };
@@ -185,6 +189,7 @@ function deleteExpectations (intent) {
     try {
       resolve(client.mutate({mutation: DELETE_EXPECTATIONS,variables: {intent}}))
     } catch (err) {
+      console.log('error deleting expectations:' + intent)
       return reject (err)
     } 
   })
@@ -195,6 +200,7 @@ function deleteReports (intent) {
     try {
       resolve(client.mutate({mutation: DELETE_REPORTS,variables: {intent}}))
     } catch (err) {
+      console.log('error deleting reports:' + intent)
       return reject (err)
     } 
   })
@@ -205,6 +211,7 @@ function deleteHierarchy (intent) {
     try {
       resolve(client.mutate({mutation: DELETE_HIERARCHY,variables: {intent}}))
     } catch (err) {
+      console.log('error deleting hierarchy:' + intent)
       return reject (err)
     } 
   })
@@ -215,6 +222,7 @@ function deleteIntents (intent) {
     try {
       resolve(client.mutate({mutation: DELETE_INTENT,variables: {intent}}))
     } catch (err) {
+      console.log('error delete intent:' + intent)
       return reject (err)
     } 
   })

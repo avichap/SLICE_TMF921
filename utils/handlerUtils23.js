@@ -41,30 +41,53 @@ var graphDBContext = null;
 // Functions returns the expressionLanguage         //
 // property from theintent request                  //  
 //////////////////////////////////////////////////////
-function postPythonRI(url,id,expression) {
-    var conf = readConf();
-    console.log('XXX: In 23 '+conf.pythonServer);
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-         if (this.readyState == 4 && this.status == 200) {
-             //do nothing for now
-             null;
-             //alert(this.responseText);
-         }
-    };
-    xhttp.open("POST", conf.pythonServer + url, true);
-    xhttp.setRequestHeader("Content-type", "application/json");
-    xhttp.setRequestHeader("accept", "application/json");
-    var payload = {
-      expression: expression,
-      id: id
-    }  
-    payload = JSON.stringify(payload); 
+function postIntentReportCreationEvent(event) {
+    const url = "http://localhost:8092/tmf-api/intent/v4/listener/intentReportCreateEvent"
+    console.log('XXX: In 23 '+url);
     
-    
-    xhttp.send(payload);
- 
+    post(url,event)
+}
 
+function postACTN(name,data,id,parent_id) {
+  const url_huawei = "http://10.220.239.74:18181/restconf/data"
+  const url_other = "http://10.220.239.74:28181/restconf/data"
+
+  
+    try {
+      var payload = JSON.parse(data)
+    } catch (err) {
+      console.log('err '+ err)
+    }
+    
+    post(url_huawei+"/ietf-te:te/tunnels",payload.expression.expressionValue.huawei_tunnel);
+    post(url_huawei+"/ietf-eth-tran-service:etht-svc",payload.expression.expressionValue.huawei_service,'PATCH');
+    post(url_other+"/ietf-te:te/tunnels",payload.expression.expressionValue.other_tunnel)
+    post(url_huawei+"/ietf-eth-tran-service:etht-svc",payload.expression.expressionValue.other_service,'PATCH');
+  
+  //save in graphql
+    process_ACTN(name,id,parent_id)
+  
+}
+async function post(url,body,method) {
+    console.log ('Post message to: '+url)
+
+  const response = await fetch(url, {
+  method: method?method:'POST',
+  headers: {
+      'Accept': '*/*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body),
+  })
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error('Http response was not OK for '+url);
+    }
+    console.log("POST Order sent successfully!");
+  })
+  .catch((error) => {
+    console.error('POST failed with error:', error);
+  });
 };
 
 function deletePythonRI(req,id) {
@@ -106,7 +129,7 @@ function readConf() {
 }
 
 
-function process_intents (expression,id,version) {
+async function process_intents (expression,id,version) {
   var uri = 'http://www.example.org/IDAN3#';
   var mimeType = 'text/turtle';
 
@@ -118,13 +141,39 @@ function process_intents (expression,id,version) {
      var intents = prepare_intents (store,id)
      var expectations = prepare_expectations (store)
      var hierarchy = prepare_hierarchy (store,version)
+     
+     insert_intents(intents,expectations,hierarchy,version)
+ 
+  })
+ }
+ catch (err) {
+  console.log(err)
+ }
+}
+
+async function insert_intents (intents,expectations,hierarchy,version) {
+  const response = await persist.processIntents (intents)
+  .then ((result) => persist.processExpectations (expectations))
+  .then ((result) => persist.queryHierarchy (version))
+  .then ((result) => persist.hierarchyResults(result))  
+  .then ((parent) => persist.processHierarchy(parent,hierarchy)) 
+
+}
+function process_ACTN (name,id,version) {
+ //create rdf object
+ try {
+    var intents = {
+      intent: name,
+      intent_id: id,
+      description: "ACTN Intent",
+      intentType: "resource",
+      domain: "Transport"
+    }
 
     persist.processIntents (intents)
-    .then ((result) => persist.processExpectations (expectations))
     .then ((result) => persist.queryHierarchy (version))
     .then ((result) => persist.hierarchyResults(result))  
-    .then ((parent) => persist.processHierarchy(parent,hierarchy))  
-  })
+    .then ((parent) => persist.processHierarchy(parent,name))  
  }
  catch (err) {
   console.log(err)
@@ -222,7 +271,8 @@ function prepare_reports(store,id) {
 }
 
 function delete_intents (intent) {
- try {
+  console.log("Deleting intent: "+intent)
+  try {
     persist.deleteExpectations (intent)
     .then((result) => persist.deleteReports (intent))
     .then((result) => persist.deleteHierarchy (intent))
@@ -236,5 +286,7 @@ function delete_intents (intent) {
 module.exports = { 
   process_intents,
   process_reports,
-  delete_intents
+  delete_intents,
+  postIntentReportCreationEvent,
+  postACTN
  };

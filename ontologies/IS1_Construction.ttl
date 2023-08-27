@@ -15,40 +15,24 @@
 @prefix   iv: <http://tio.models.tmforum.org/tio/v3.2.0/IntentValidity#> .
 
 #intent
-idan:IS1_Power
+idan:IS1_Construction
   a icm:Intent ;
   cem:layer idan:service ;
   imo:intentOwner idan:Service ;
-  rdfs:comment "'Intent for maintaining a desirable energy consumption profile of 10W per user'" ;
-  icm:hasExpectation idan:ES1_energy_consumption_expectation,
+  rdfs:comment "'Intent for helmet service'" ;
+  icm:hasExpectation idan:ES1_helmet_expectation,
                         idan:ES1_reporting_expectation
      .
 
-idan:ES1_energy_consumption_expectation
-  a icm:EnergyConsumptionExpectation ;
-    icm:energyProfile idan:ES1_energy_profile ;
+idan:ES1_helmet_expectation
+  a icm:DeliveryExpectation ;
     icm:target idan:TS1 ;
 .
 
-idan:ES1_energy_profile
-  a icm:EnergyProfile ;
-  icm:observation [ icm:latestValue 10 ;
-                    icm:unit idan:EC1_unit ;
-                  ] ;
-.
-
-idan:EC1_unit
-  a icm:Parameter ;
-  icm:unitDescription "'Watt/User'" ;
-  icm:unitType idan:Power ;
-.
 # targets
 idan:TS1
   a icm:Target ;
-  icm:allOf [ rdfs:member idan:RanDomain;
-               rdfs:member idan:TransportDomain;
-               rdfs:member idan:CoreDomain;
-               rdfs:member idan:EdgeDomain]
+  icm:allOf [ rdfs:member idan:HelmetService]
 .
 
 
@@ -59,16 +43,16 @@ idan:EventS1
   a rdfs:Class ;
   rdfs:subClassOf imo:Event ;
   logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventS1 ;
-                                              rdfs:member idan:IS1_Power ]]  ,
+                                              rdfs:member idan:IS1_Construction ]]  ,
                          [t:hasDuration idan:5M ] ;
                 t:before [ t:hasBeginning imo:Now ] ;
          ] ;
-  imo:eventFor idan:IS1_Power
+  imo:eventFor idan:IS1_Construction
 .
 
 idan:ES1_reporting_expectation
   a icm:ReportingExpectation ;
-  icm:target idan:IS1_Power  ;
+  icm:target idan:IS1_Construction  ;
   icm:reportDestination [ rdfs:member idan:Operations ] ;
   icm:reportTriggers [ rdfs:member imo:IntentRejected ; 
                        rdfs:member imo:IntentAccepted ;

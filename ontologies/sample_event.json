@@ -1,0 +1,23 @@
+{
+  "eventId": "85dcbbdf-b7b3-44e1-b0fc-92b7281dd6ca",
+  "eventTime": "2023-08-26T10:54:20.495Z",
+  "eventType": "IntentReportCreationNotification",
+  "event": {
+    "intentReport": {
+      "id": "f3fc12f5-4883-4a07-99e1-b4309f599646",
+      "name": "R13R1_Intent_Accepted",
+      "creationDate": "2023-08-26T10:54:20.495Z",
+      "expression": {
+        "iri": "http://tio.models.tmforum.org/tio/v3.2.0/IntentCommonModel",
+        "@baseType": "Expression",
+        "@type": "TurtleExpression",
+        "expressionLanguage": "Turtle",
+        "expressionValue": "@prefix icm:  <http://tio.models.tmforum.org/tio/v3.2.0/IntentCommonModel#> .\r\n@prefix imo:  <http://tio.models.tmforum.org/tio/v3.2.0/IntentManagmentOntology#> .\r\n@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\r\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\r\n@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .\r\n@prefix idan: <http://www.example.org/IDAN3#> .\r\n@prefix t:    <http://www.w3.org/2006/time#> .\r\n@prefix logi:  <http://tio.models.tmforum.org/tio/v3.2.0/LogicalOperators#> .\r\n@prefix quan: <http://tio.models.tmforum.org/tio/v3.2.0/QuantityOntology#> .\r\n@prefix set:  <http://tio.models.tmforum.org/tio/v3.2.0/SetOperators#> .\r\n@prefix fun:  <http://tio.models.tmforum.org/tio/v3.2.0/FunctionOntology#> .\r\n@prefix ui: <http://www..example.org/ui#> .\r\n@prefix mf: <http://www..example.org/mf#> .\r\n@prefix cem: <http://tio.labs.tmforum.org/tio/v1.0.0/CatalystExtensionModel#> .\r\n@prefix   iv: <http://tio.models.tmforum.org/tio/v3.2.0/IntentValidity#> .\r\n\r\n##### Service Intent Report ###################################################\r\n#\r\n# This intent report is sent on acceptance of the intent \r\n# \r\nidan:IR13R1_Power_Intent_Accepted\r\n  a icm:IntentReport ;\r\n  rdfs:comment \"'Intent Report after accepting the intent'\" ;\r\n  icm:reportsAbout idan:IR1_3_Construction ;\r\n  # put in the live timestamp from the time the report is created:\r\n    icm:reportTimestamp            \"'2023-08-26T10:54:20.495Z'\"^^xsd:dateTime ;\r\n  icm:handlingState icm:StateAccepted ;\r\n  icm:updateState icm:StateNoUpdate ;\r\n  icm:reportNumber 1 ;\r\n  cem:layer idan:resource ;\r\n  icm:hasExpectationReport idan:R13R1E1_property ,\r\n                           idan:R13R1E2_reporting ; \r\n.\r\n\r\n\r\nidan:R13R1E1_property\r\n  a icm:ExpectationReport ;\r\n  icm:reportsAbout idan:ES1_energy_consumption_expectation ;\r\n.\r\n\r\n         \r\nidan:R13R1E2_reporting\r\n  a icm:ExpectationReport ;\r\n  icm:reportsAbout idan:ES1_reporting_expectation ;\r\n  icm:reportingIntervalRemaining [ a t:Duration ;\r\n                                   t:numericDuration idan:5M \r\n                            ] ;\r\n.\r\n",
+        "@schemaLocation": "https://mycsp.com:8080/tmf-api/schema/Common/TurtleExpression.schema.json"
+      },
+      "intent": {
+        "id": <<Name of the parent Intent>>
+      }
+    }
+  }
+}

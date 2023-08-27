@@ -19,10 +19,12 @@ const handlerUtils23 = require('../utils/handlerUtils23');
 const Intent = require('../controllers/Intent');
 const intentHandler = require('./IntentHandler')
 
-const S1_children = ['IR1_1_Construction','IR1_3_Construction','IR1_2_Construction']
-const S2_children = ['IR2_1_Emergency','IR2_3_Emergency','IR2_2_Emergency']
-const S3_children = ['IR3_1_Power','IR3_3_Power','IR3_2_Power']
-const sendResource = process.env.SEND_RESOURCE_INTENT!==undefined ? process.env.SEND_RESOURCE_INTENT:true
+const S1_children = ['IR1_1_Construction.ttl','IR1_3_Construction.ttl','IR1_2_Construction_ACTN.json']
+const S2_children = ['IR2_1_Emergency.ttl','IR2_3_Emergency.ttl','IR2_2_Emergency_ACTN.json']
+const S3_children = ['IR3_1_Power.ttl','IR3_3_Power.ttl','IR3_2_Power.ttl']
+const sendResourceStr = process.env.SEND_RESOURCE_INTENT!==undefined ? process.env.SEND_RESOURCE_INTENT:'true'
+const sendResource = sendResourceStr=='false' ? false:true
+console.log('SendReource '+sendResource)
 
 // Initialize parameters to be processed in service intent, the values 
 // are modified later based on what is received in actual intent
@@ -51,7 +53,13 @@ exports.processIntent = function(req) {
 
   var serviceOrder;
   var name;
-  if (expression.indexOf("S1") > 0) {
+  var probe=false;
+  if (expression.indexOf("Probe") > 0) {
+    serviceOrder = '';
+    name = 'Probe;'
+    probe=true;
+  }
+  else if (expression.indexOf("S1") > 0) {
     serviceOrder = 'service_order_HELMET_SERVICE_CREATE.json';
     name = 'S1;'
   }
@@ -66,18 +74,19 @@ exports.processIntent = function(req) {
     //From expression extract triples and load the intent in GraphDB 
   handlerUtils.extractTriplesandKG(expression, `insert`, 'text/turtle',name);
 
-  createIntentReport(req,name);
   var id = req.body.id;
-  
-  sendCreateServiceOrder(id,serviceOrder);
-
-  /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
+    /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
     //Call the python server 
 //    handlerUtils23.postPythonRI(req.originalUrl,id,req.body);
   handlerUtils23.process_intents(expression,id,req.body.version)
 
-  /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
-    
+/* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
+  
+  createIntentReport(req,name);
+  
+  if (!probe) sendCreateServiceOrder(id,serviceOrder);
+
+
 };
 
 function sendCreateServiceOrder(id,serviceOrder) {
@@ -117,71 +126,33 @@ function sendCreateServiceOrder(id,serviceOrder) {
 
 function createIntentReport(req,name) {
   var filename;
-  var children;
-  if (name.indexOf("S1") >= 0) {
-
-     // 1. Intent Accepted
-     filename = 'S1R1_Intent_Accepted'
-     handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-     console.log(`log: ${filename} sent`);
-
-     // 2. Intent Degraded
-     filename = 'S1R2_Intent_Compliant'
-     handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-     console.log(`log: ${filename} sent`);
-
-     // 3. The send the S1 intent
-     //just needed to test without symphonica
-    if (sendResource) {
-     children = [...S1_children]
+  var children = [];
+  var reports = [];
+ if (name.indexOf("Probe") >= 0) {
+    reports = ['S1Probe_Intent_Accepted','S1Probe_Intent_Degraded']
+ }
+ else if (name.indexOf("S1") >= 0) {
+    reports = ['S1R1_Intent_Accepted','S1R2_Intent_Compliant']
+    children = [...S1_children]
+ }
+ else if (name.indexOf("S2") >= 0) {
+    reports = ['S2R1_Intent_Accepted','S2R2_Intent_Compliant']
+    children = [...S2_children]
+ }
+ else if (name.indexOf("S3") >= 0) {
+    reports = ['S3R1_Intent_Accepted','S3R2_Intent_Compliant']
+    children = [...S3_children]
+ }
+   reports.forEach(x => {
+      handlerUtils.sendIntentReport(x, x+'.ttl', req);
+      console.log(`log: ${x} Intent Posted`);
+   })
+   if (sendResource) {
      children.forEach(x => {
-       handlerUtils.postIntent(x, x+'.ttl', req);
+       handlerUtils.postIntent(x.substring(0,x.indexOf('.')), x, req);
        console.log(`log: ${x} Intent Posted`);
      })
-    }
-  }
-  if (name.indexOf("S2") >= 0) {
-
-    // 1. Intent Accepted
-    filename = 'S2R1_Intent_Accepted'
-    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-    console.log(`log: ${filename} sent`);
-
-    // 2. Intent Degraded
-    filename = 'S2R2_Intent_Compliant'
-    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-    console.log(`log: ${filename} sent`);
-    // 3. The send the S1 intent
-    //just needed to test without symphonica
-    if (sendResource) {
-      children = [...S2_children]
-      children.forEach(x => {
-        handlerUtils.postIntent(x, x+'.ttl', req);
-        console.log(`log: ${x} Intent Posted`);
-      })
-    }
-  }
-  if (name.indexOf("S3") >= 0) {
-     // 1. Intent Accepted
-     filename = 'S3R1_Intent_Accepted'
-     handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-     console.log(`log: ${filename} sent`);
-
-     // 2. Intent Degraded
-     filename = 'S3R2_Intent_Compliant'
-     handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-     console.log(`log: ${filename} sent`);
-     
-     // 3. The send the R3 intent
-     //just needed to test without symphonica
-     if (sendResource) {
-       children = [...S3_children]
-       children.forEach(x => {
-         handlerUtils.postIntent(x, x+'.ttl', req);
-         console.log(`log: ${x} Intent Posted`);
-       })
-    }
-  }
+   }
 }
 
 function extractParamsFromIntent(expression, type) {
@@ -211,11 +182,11 @@ function extractParamsFromIntent(expression, type) {
     var networkUtilTriplesSubject = store.each(undefined, ICM('observation'), networkUtilObservationObject[0]);
     var networkUtilTriples = store.each(networkUtilTriplesSubject[0], ICM('smaller'), undefined);
     var networkUtil = store.each(networkUtilTriples[0], ICM('value'), undefined);
-    if ((networkUtilObservationObject[0] == undefined) || (networkUtilTriplesSubject[0] == undefined) || (networkUtilTriples[0] == undefined) || (networkUtil[0] == undefined)) {
-      serviceIntentParams.networkUtil = null;
-    } else {
-      serviceIntentParams.networkUtil = parseFloat(networkUtil[0].value);
-    }
+//    if ((networkUtilObservationObject[0] == undefined) || (networkUtilTriplesSubject[0] == undefined) || (networkUtilTriples[0] == undefined) || (networkUtil[0] == undefined)) {
+//      serviceIntentParams.networkUtil = null;
+//    } else {
+//      serviceIntentParams.networkUtil = parseFloat(networkUtil[0].value);
+//    }
     
     var bandwidthObservationObject = store.each(undefined, ICM('latestValueOf'), MET('ServiceBandwidth'));
     var bandwidthTriplesSubject = store.each(undefined, ICM('observation'), bandwidthObservationObject[0]);
@@ -311,8 +282,8 @@ exports.deleteIntent = function(query, resourceType,intentname,req) {
   //delete children intent
   if (sendResource) {
     children.forEach(x => {
-    intentHandler.deleteIntentbyName(x,req,false);
-    console.log(`log: ${x} Delete`);
+      intentHandler.deleteIntentbyName(x.substring(0,x.indexOf('.')),req,false);
+      console.log(`log: ${x} Delete`);
     })
   }
   /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/

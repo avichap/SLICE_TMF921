@@ -24,7 +24,9 @@ const swaggerUtils = require('../utils/swaggerUtils');
 const Intent = require('../controllers/Intent');
 
 const serviceIntentHandler = require('../handler/ServiceIntentHandler');
-const sendResource = process.env.SEND_RESOURCE_INTENT!==undefined ? process.env.SEND_RESOURCE_INTENT:true
+const sendResourceStr = process.env.SEND_RESOURCE_INTENT!==undefined ? process.env.SEND_RESOURCE_INTENT:'true'
+const sendResource = sendResourceStr=='false' ? false:true
+console.log('SendReource '+sendResource)
 
 // This function is called from the RI once the intent as been stored in MOngo
 //it will extract the expression from the request body, parse the expresion into
@@ -33,150 +35,49 @@ const sendResource = process.env.SEND_RESOURCE_INTENT!==undefined ? process.env.
 //using the RI HUB
 exports.processIntent = function(req) {
 //  handlerUtils.wait(120000);
+const expression = handlerUtils.getExpression(req);
 
-  //extract expression
-  const expression = handlerUtils.getExpression(req);
+if (req.body.name.indexOf('ACTN')>0) {
+  handlerUtils23.postACTN(req.body.name,req.body.expression.expressionValue,req.body.id,req.body.version)
+} else {
 
   //From expression extract triples and load the data in GraphDB 
-  handlerUtils.extractTriplesandKG(expression,`insert`,'text/turtle','R3_1');
-  
+  handlerUtils.extractTriplesandKG(expression,`insert`,'text/turtle',req.body.name);
+}  
     /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
     //Call the python server 
 //    handlerUtils23.postPythonRI(req.originalUrl,req.body.id,req.body);
-   handlerUtils23.process_intents(expression,req.body.id,req.body.version)
+  handlerUtils23.process_intents(expression,req.body.id,req.body.version)
 /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
 
-  var filename;
+  var reports = [];
+
   if (sendResource) {
     /// Test R31 process
-  if (expression.indexOf("R3_1") >= 0) {
-
-    // 1. Intent Accepted
-    filename = 'R31R1_Intent_Accepted'
-    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-    console.log(`log: ${filename} sent`);
-    
-    // 2. Intent Degraded
-    filename = 'R31R2_Intent_Compliant'
-    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-    console.log(`log: ${filename} sent`);
-
- }
-
-if (expression.indexOf("R3_2") >= 0) {
-
-  // 1. Intent Accepted
-  filename = 'R32R1_Intent_Accepted'
-  handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-  console.log(`log: ${filename} sent`);
-  
-  // 2. Intent Degraded
-  filename = 'R32R2_Intent_Compliant'
-  handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-  console.log(`log: ${filename} sent`);
-
-}
-
-if (expression.indexOf("R3_3") >= 0) {
-
-  // 1. Intent Accepted
-  filename = 'R33R1_Intent_Accepted'
-  handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-  console.log(`log: ${filename} sent`);
-  
-  // 2. Intent Degraded
-  filename = 'R33R2_Intent_Compliant'
-  handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-  console.log(`log: ${filename} sent`);
-  
+    if (expression.indexOf("R3_1") >= 0) {
+      reports = ['R31R1_Intent_Accepted','R31R2_Intent_Compliant']
+    } else if (expression.indexOf("R3_2") >= 0) {
+      reports = ['R32R1_Intent_Accepted','R32R2_Intent_Compliant']
+    } else if (expression.indexOf("R3_3") >= 0) {
+      reports = ['R33R1_Intent_Accepted','R33R2_Intent_Compliant']
+    } else if (expression.indexOf("R2_3") >= 0) {
+      reports = ['R23R1_Intent_Accepted','R23R2_Intent_Compliant']
+    } else if (expression.indexOf("R2_1") >= 0) {
+      reports = ['R21R1_Intent_Accepted','R21R2_Intent_Compliant']
+    } else if (expression.indexOf("R2_2") >= 0) {
+      reports = ['R22R1_Intent_Accepted','R22R2_Intent_Compliant']
+    } else if (expression.indexOf("R1_3") >= 0) {
+      reports = ['R13R1_Intent_Accepted','R13R2_Intent_Compliant']
+    } else if (expression.indexOf("R1_1") >= 0) {
+      reports = ['R11R1_Intent_Accepted','R11R2_Intent_Compliant']
+    } else if (expression.indexOf("R1_2") >= 0) {
+      reports = ['R12R1_Intent_Accepted','R12R2_Intent_Compliant']
+    }
+    reports.forEach (report => { 
+      handlerUtils.sendIntentReportEvent(report,report+'.ttl',req);
+      console.log(`log: ${report} sent`);
+    }) 
   }
-
-  if (expression.indexOf("R2_3") >= 0) {
-
-    // 1. Intent Accepted
-    filename = 'R23R1_Intent_Accepted'
-    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-    console.log(`log: ${filename} sent`);
-    
-    // 2. Intent Degraded
-    filename = 'R23R2_Intent_Compliant'
-    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-    console.log(`log: ${filename} sent`);
-  
-  }
-  
-  if (expression.indexOf("R2_1") >= 0) {
-  
-    // 1. Intent Accepted
-    filename = 'R21R1_Intent_Accepted'
-    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-    console.log(`log: ${filename} sent`);
-    
-    // 2. Intent Degraded
-    filename = 'R21R2_Intent_Compliant'
-    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-    console.log(`log: ${filename} sent`);
-  
-  }
-  
-  if (expression.indexOf("R2_2") >= 0) {
-  
-  // 1. Intent Accepted
-  filename = 'R22R1_Intent_Accepted'
-  handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-  console.log(`log: ${filename} sent`);
-  
-  // 2. Intent Degraded
-  filename = 'R22R2_Intent_Compliant'
-  handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-  console.log(`log: ${filename} sent`);
-  
-  }
-  if (expression.indexOf("R1_3") >= 0) {
-
-    // 1. Intent Accepted
-    filename = 'R13R1_Intent_Accepted'
-    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-    console.log(`log: ${filename} sent`);
-    
-    // 2. Intent Degraded
-    filename = 'R13R2_Intent_Compliant'
-    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-    console.log(`log: ${filename} sent`);
-  
-  }
-  
-  if (expression.indexOf("R1_1") >= 0) {
-  
-    // 1. Intent Accepted
-    filename = 'R11R1_Intent_Accepted'
-    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-    console.log(`log: ${filename} sent`);
-    
-    // 2. Intent Degraded
-    filename = 'R11R2_Intent_Compliant'
-    handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-    console.log(`log: ${filename} sent`);
-  
-  }
-  
-  if (expression.indexOf("R1_2") >= 0) {
-  
-  // 1. Intent Accepted
-  filename = 'R12R1_Intent_Accepted'
-  handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-  console.log(`log: ${filename} sent`);
-  
-  // 2. Intent Degraded
-  filename = 'R12R2_Intent_Compliant'
-  handlerUtils.sendIntentReport(filename, filename+'.ttl', req);
-  console.log(`log: ${filename} sent`);
-  
-  }
-    
-}
-
-
 };
 
 

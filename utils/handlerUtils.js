@@ -372,13 +372,8 @@ function deleteAllKGData() {
 // stores the intent report into mongo                //
 // generates event (notify)                           //
 ////////////////////////////////////////////////////////
-function insertIntentReport(name,report,req) {
+function insertIntentReport(message,req1) {
   const resourceType = 'IntentReport';
-
-  //generates message
-  const message = createIntentReportMessage(name,report,req);
-  //generates request for the notification
-  const req1 = createIntentReportReq(req,resourceType);
 
   mongoUtils.connect().then(db => {
   db.collection(resourceType)
@@ -401,9 +396,7 @@ function insertIntentReport(name,report,req) {
       console.log("createReport: error=" + error);
     })
 })
-.catch((error) => {
-  console.log("createReport: error=" + error);
-})
+
 
 }
 
@@ -497,13 +490,58 @@ function sendIntentReport(name,filename,req) {
   extractTriplesandKG(data,`insert`,'text/turtle',name);
 
  //3. insert report into mongodb and send notification
-  insertIntentReport(name,data,req);
+   const resourceType = 'IntentReport';
+   //generates message
+   const message = createIntentReportMessage(name,data,req);
+   //generates request for the notification
+   const req1 = createIntentReportReq(req,resourceType);
+ 
+  insertIntentReport(message,req1);
   //4. create event
 //  inside the previous step as async
 //  wait(10000)
   console.log('Posted report: '+name)
 });
 
+}
+
+function sendIntentReportEvent(name,filename,req) {
+  fs.readFile('./ontologies/'+filename, 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+
+    data = addTimestamp(data);
+    const resourceType = 'IntentReport';
+
+    //generates message
+    const message = createIntentReportMessage(name,data,req);
+  
+    var event = {
+      eventId:   uuid.v4(),
+      eventTime: new Date().toISOString(),
+      eventType: "IntentReportCreationNotification",
+      event: {intentReport: message}
+    }
+
+    handlerUtils23.postIntentReportCreationEvent(event)
+
+  });
+}
+
+function processIntentReportEvent(event,req) {
+
+ //   console.log(data);
+  //2. insert report in grapbdb
+  extractTriplesandKG(event.event.intentReport.expression.expressionValue,`insert`,'text/turtle',event.event.intentReport.name);
+
+ //3. insert report into mongodb and send notification
+  insertIntentReport(event.event.intentReport,req);
+  //4. create event
+//  inside the previous step as async
+//  wait(10000)
+  console.log('Posted report: '+event.event.intentReport.name)
 }
 
 ////////////////////////////////////////////////////////
@@ -622,26 +660,27 @@ function postIntent(name,filename,req) {
       console.error(err);
       return;
     }
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
+    
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
        if (this.readyState == 4 && this.status == 200) {
            //do nothing for now
            null;
            //alert(this.responseText);
        }
-    };
-    var url = 'http://'+req.headers.host+req.originalUrl;
-    console.log('URL: '+url);
-    xhttp.open("POST", url, true);
-    xhttp.setRequestHeader("Content-Type", "application/json");
-    xhttp.setRequestHeader("accept", "application/json");
+      };
+      var url = 'http://'+req.headers.host+req.originalUrl;
+      console.log('URL: '+url);
+      xhttp.open("POST", url, true);
+      xhttp.setRequestHeader("Content-Type", "application/json");
+      xhttp.setRequestHeader("Accept", "application/json");
     
-    var payload = createIntentMessage(name,data);
-    payload.version=req.body.id;
-    payload = JSON.stringify(payload);
+      var payload = createIntentMessage(name,data);
+      payload.version=req.body.id;
+      payload = JSON.stringify(payload);
     
-    xhttp.send(payload);
-
+      xhttp.send(payload);
+    
   });
 };
 
@@ -743,7 +782,7 @@ function checkandSendReport(payload,req) {
   var filename;
  //Provisioning flow
  //S3 -> R31 -> get R3R1
-
+/*
   if (payload.indexOf("S1R1")>0){ // check whether it's a resource intent
      filename = 'B1R2_Intent_Degraded.ttl'
      sendIntentReportandFindID('B1R2_Intent_Degraded',filename,req);;
@@ -755,20 +794,7 @@ function checkandSendReport(payload,req) {
     sendIntentReportandFindID('B1R3_Intent_Degraded',filename,req);
     console.log('log: B1 Report Degraded 2 sent');
   }
-     
-  //R1R2 -> S1R3 
-  else if (payload.indexOf("R1R2")>0){ // check whether it's a resource intent
-    filename = 'S1R3_Intent_Compliant.ttl'
-    sendIntentReportandFindID('S1R3_Intent_Compliant',filename,req);
-    console.log('log: S1 Report Compliant sent');
-  }
-
-    //S1R3 -> B1R4
-  else if (payload.indexOf("S1R3")>0){ // check whether it's a resource intent
-      filename = 'B1R4_Intent_Compliant.ttl'
-      sendIntentReportandFindID('B1R4_Intent_Compliant',filename,req);
-      console.log('log: B1 Report Compliant sent');
-  }
+*/
 
 }
 
@@ -783,11 +809,13 @@ module.exports = {
   createIntentReportReq,
   intentReportFileName,
   sendIntentReport,
+  sendIntentReportEvent,
   postIntent, 
   patchIntent,
   wait,
   createIntentMessage,
   checkandSendReport,
   deleteAllKGData,
-  createIssue
+  createIssue,
+  processIntentReportEvent
 				   			 };
