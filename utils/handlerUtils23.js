@@ -19,7 +19,10 @@ const $rdf = require('rdflib');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const uuid = require('uuid');
 const notificationUtils = require('../utils/notificationUtils');
+const fetch = require('node-fetch');
 
+const server = process.env.GRAPHQL_ENGINE_URL!==undefined ? process.env.GRAPHQL_ENGINE_URL:"10.220.239.74"
+console.log("Server: "+server)
 const RDF = $rdf.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 const RDFS = $rdf.Namespace("http://www.w3.org/2000/01/rdf-schema#");
 const IDAN = $rdf.Namespace("http://www.example.org/IDAN3#");
@@ -42,15 +45,15 @@ var graphDBContext = null;
 // property from theintent request                  //  
 //////////////////////////////////////////////////////
 function postIntentReportCreationEvent(event) {
-    const url = "http://localhost:8092/tmf-api/intent/v4/listener/intentReportCreateEvent"
+    const url = `http://${server}:8092/tmf-api/intent/v4/listener/intentReportCreateEvent`
     console.log('XXX: In 23 '+url);
     
     post(url,event)
 }
 
 function postACTN(name,data,id,parent_id) {
-  const url_huawei = "http://10.220.239.74:18181/restconf/data"
-  const url_other = "http://10.220.239.74:28181/restconf/data"
+  const url_huawei = `http://${server}:18181/restconf/data`
+  const url_other = `http://${server}:28181/restconf/data`
 
   
     try {
