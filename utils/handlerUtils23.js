@@ -62,10 +62,10 @@ function postACTN(name,data,id,parent_id) {
       console.log('err '+ err)
     }
     
-    post(url_huawei+"/ietf-te:te/tunnels",payload.expression.expressionValue.huawei_tunnel);
-    post(url_huawei+"/ietf-eth-tran-service:etht-svc",payload.expression.expressionValue.huawei_service,'PATCH');
-    post(url_other+"/ietf-te:te/tunnels",payload.expression.expressionValue.other_tunnel)
-    post(url_other+"/ietf-eth-tran-service:etht-svc",payload.expression.expressionValue.other_service,'PATCH');
+    post(url_huawei+"/ietf-te:te/tunnels",payload.huawei_tunnel);
+    post(url_huawei+"/ietf-eth-tran-service:etht-svc",payload.huawei_service,'PATCH');
+    post(url_other+"/ietf-te:te/tunnels",payload.other_tunnel)
+    post(url_other+"/ietf-eth-tran-service:etht-svc",payload.other_service,'PATCH');
   
   //save in graphql
     process_ACTN(name,id,parent_id)
