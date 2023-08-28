@@ -622,11 +622,20 @@ function createIntentMessage(name,data,version) {
   var date_end = (new Date(date.getFullYear()+1, date.getMonth(), date.getDate())).toISOString();
   if (version==undefined) version = "1"
   //expression
+  var type
+  var language
+  if (name.indexOf('ACTN')>0) {
+    type= "JsonExpression", 
+    language= "Json"
+  } else {
+    type= "TurtleExpression", 
+    language= "Turtle"
+  }
   var expression = {
     iri: "http://tio.models.tmforum.org/tio/v3.2.0/IntentCommonModel",
     "@baseType": "Expression",
-    "@type": "TurtleExpression", 
-    expressionLanguage: "Turtle",
+    "@type": type, 
+    expressionLanguage: language,
     expressionValue: data,
     "@schemaLocation": "https://mycsp.com:8080/tmf-api/schema/Common/TurtleExpression.schema.json",
   };

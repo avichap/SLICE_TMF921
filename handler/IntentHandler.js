@@ -43,12 +43,14 @@ if (req.body.name.indexOf('ACTN')>0) {
 
   //From expression extract triples and load the data in GraphDB 
   handlerUtils.extractTriplesandKG(expression,`insert`,'text/turtle',req.body.name);
-}  
-    /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
+
+      /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
     //Call the python server 
 //    handlerUtils23.postPythonRI(req.originalUrl,req.body.id,req.body);
-  handlerUtils23.process_intents(expression,req.body.id,req.body.version)
+   handlerUtils23.process_intents(expression,req.body.id,req.body.version)
 /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
+
+}  
 
   var reports = [];
 
@@ -84,12 +86,29 @@ if (req.body.name.indexOf('ACTN')>0) {
 // This function is called from the RI once the intent as been deleted from MOngo
 //it reads the intent expression from mongo, parse the expresion into
 //triples and then deletes these triples from the graphdb.
-exports.deleteIntent = function(query,resourceType) {
+exports.deleteIntent = function(query,resourceType,name) {
 
   console.log('query.id: '+query.id)
   console.log('resourceType: '+resourceType)
+ 
  //reads intent from mongo and then deletes objects from KG.  All in one function as async
- handlerUtils.getIntentExpressionandDeleteKG(query,resourceType); 
+  handlerUtils.getIntentExpressionandDeleteKG(query,resourceType); 
+  
+  if (name.indexOf('Construction_ACTN')>0) {
+    var filename
+    if (name.indexOf('Construction_ACTN')>0) filename = 'IR1_2_Construction_ACTN.json'
+    else filename = 'IR2_2_Emergency_ACTN.json'
+
+    fs.readFile('./ontologies/'+filename, 'utf8', (err, data) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      handlerUtils23.deleteACTN(name,data)
+
+    })
+
+  } 
 
 };
 exports.deleteIntentbyName = function(name,req,serviceIntent) {
@@ -112,7 +131,7 @@ exports.deleteIntentbyName = function(name,req,serviceIntent) {
          serviceIntentHandler.deleteIntent(query2,'Intent');
       } else {
         this.deleteIntentReports(x.id, 'IntentReport');
-        this.deleteIntent(query2,'Intent');
+        this.deleteIntent(query2,'Intent',name);
       }
 /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
     //Call the python server 

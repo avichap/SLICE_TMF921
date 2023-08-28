@@ -175,7 +175,7 @@ function extractParamsFromIntent(expression, type) {
   try {
     $rdf.parse(expression, store, uri, mimeType);
 
-    var intentName = store.each(undefined, CEM('layer'), "service");
+    var intentName = store.each(undefined, CEM('layer'), EX('service'));
     serviceIntentParams.intentName = intentName[0].value;
 
     var networkUtilObservationObject = store.each(undefined, ICM('latestValueOf'), MET('NetworkUtilization'));

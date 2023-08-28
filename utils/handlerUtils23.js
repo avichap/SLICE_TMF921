@@ -65,11 +65,30 @@ function postACTN(name,data,id,parent_id) {
     post(url_huawei+"/ietf-te:te/tunnels",payload.expression.expressionValue.huawei_tunnel);
     post(url_huawei+"/ietf-eth-tran-service:etht-svc",payload.expression.expressionValue.huawei_service,'PATCH');
     post(url_other+"/ietf-te:te/tunnels",payload.expression.expressionValue.other_tunnel)
-    post(url_huawei+"/ietf-eth-tran-service:etht-svc",payload.expression.expressionValue.other_service,'PATCH');
+    post(url_other+"/ietf-eth-tran-service:etht-svc",payload.expression.expressionValue.other_service,'PATCH');
   
   //save in graphql
     process_ACTN(name,id,parent_id)
   
+}
+function deleteACTN(name,data) {
+  const url_huawei = `http://${server}:18181/restconf/data`
+  const url_other = `http://${server}:28181/restconf/data`
+
+  
+    try {
+      var payload = JSON.parse(data)
+      payload = JSON.parse(payload.expression.expressionValue)
+    } catch (err) {
+      console.log('err '+ err)
+    }
+    
+    post(url_huawei+"/ietf-eth-tran-service:etht-svc",payload.huawei_service,'DELETE');
+    post(url_huawei+"/ietf-te:te/tunnels",payload.huawei_tunnel,'DELETE');
+    post(url_other+"/ietf-eth-tran-service:etht-svc",payload.other_service,'DELETE');
+    post(url_other+"/ietf-te:te/tunnels",payload.other_tunnel,'DELETE')
+  
+
 }
 async function post(url,body,method) {
     console.log ('Post message to: '+url)
@@ -291,5 +310,6 @@ module.exports = {
   process_reports,
   delete_intents,
   postIntentReportCreationEvent,
-  postACTN
+  postACTN,
+  deleteACTN
  };
