@@ -78,7 +78,6 @@ function deleteACTN(name,data) {
   
     try {
       var payload = JSON.parse(data)
-      payload = JSON.parse(payload.expression.expressionValue)
     } catch (err) {
       console.log('err '+ err)
     }
