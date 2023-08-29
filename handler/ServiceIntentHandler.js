@@ -310,7 +310,11 @@ function sendDeleteServiceOrder(serviceOrder,id) {
  
     var deleteOrderJson = JSON.parse(deleteOrder);
     //add the service intent id
-    deleteOrderJson.orderItems[0].service.publicIdentifier = id;
+    var i =  deleteOrderJson.orderItems.length
+    deleteOrderJson.orderItems.forEach(orderItem=>{
+      orderItem.service.publicIdentifier = id+`_${i}`;
+      i=i-1
+    })
     console.log("SERVICE ORDER = " + JSON.stringify(deleteOrderJson));
 
     try {
