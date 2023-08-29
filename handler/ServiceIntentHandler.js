@@ -101,13 +101,17 @@ function sendCreateServiceOrder(id,serviceOrder) {
  
     var createOrderJson = JSON.parse(createOrder);
     //add the service intent id
-    createOrderJson.orderItems[0].service.publicIdentifier = id;
+    var i = 1
+    createOrderJson.orderItems.forEach(orderItem=>{
+      orderItem.service.publicIdentifier = id+`_${i}`;
+      i=i+1
+    })
 
-    if ((serviceIntentParams.quality == 'Premium') && (serviceIntentParams.availability >= 0.99)) {
-      createOrderJson.orderItems[0].service.characteristics[1].value = "10";
-    } else {
-      createOrderJson.orderItems[0].service.characteristics[1].value = "5";
-    }
+//    if ((serviceIntentParams.quality == 'Premium') && (serviceIntentParams.availability >= 0.99)) {
+//      createOrderJson.orderItems[0].service.characteristics[1].value = "10";
+//    } else {
+//      createOrderJson.orderItems[0].service.characteristics[1].value = "5";
+//    }
 
     //createOrderJson.orderItems[0].service.characteristics[2].value = serviceIntentParams.site.toString();
     
