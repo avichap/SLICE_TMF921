@@ -56,7 +56,11 @@ exports.createIntent = async function(req, res, next) {
   
   const resourceType = getResponseType(req);
   const requestSchema = getPayloadSchema(req);
-
+  console.log('Parentid: '+req.body.version)
+  if (req.body.version.indexOf('_')>0)
+    req.body.version=req.body.version.substring(0,req.body.version.indexOf('_'))
+  console.log('Parentid: '+req.body.version)
+  
   swaggerUtils.getPayload(req)
     .then(payload => validateRequest(req, 'createIntent', payload))
     .then(payload => traverse(req, requestSchema, payload,[],getPayloadType(req)))

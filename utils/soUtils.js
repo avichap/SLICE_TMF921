@@ -94,7 +94,7 @@ async function sendServiceOrder(order) {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error('Http response was not OK');
+        throw new Error('Http response was not OK '+response.statusText);
       }
       console.log("Service Order sent successfully!");
     })
