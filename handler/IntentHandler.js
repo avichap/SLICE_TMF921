@@ -110,6 +110,13 @@ exports.deleteIntent = function(query,resourceType,name) {
 
   } 
 
+    /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/
+    //Call the python server 
+    //    handlerUtils23.deletePythonRI(req,query.id);
+    handlerUtils23.delete_intents(name)
+    /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
+  
+
 };
 exports.deleteIntentbyName = function(name,req,serviceIntent) {
   var query = mongoUtils.getMongoQuery(req);

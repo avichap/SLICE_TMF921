@@ -67,7 +67,7 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   // Login to SO and store the token obtained.
   // Since the token needs to be obtained only once hence it is done during
   // initilization rather than getting it each time an intent is created or deleted
-  soUtils.storeSoTokenAfterLogin();
+  //soUtils.storeSoTokenAfterLogin();
 
   /* XXXXXXXXXXXXX Ericsson IRC - End  XXXXXXXXXXXXXXXx*/
 

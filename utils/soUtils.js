@@ -82,7 +82,8 @@ async function storeSoTokenAfterLogin() {
 // Function sends the service order to SO           //
 //////////////////////////////////////////////////////
 async function sendServiceOrder(order) {
-  const response = await fetch(SO_BASE_URL + "/service-order-manager/api/service-orders/", {
+  const response = await storeSoTokenAfterLogin()
+    .then (response => {fetch(SO_BASE_URL + "/service-order-manager/api/service-orders/", {
     method: 'POST',
     headers: {
       'Accept': '*/*',
@@ -100,7 +101,8 @@ async function sendServiceOrder(order) {
     })
     .catch((error) => {
       console.error('SO: sendServiceOrder failed with error:', error);
-    });
+    })
+  });
 }
 
 
