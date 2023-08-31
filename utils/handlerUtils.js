@@ -537,7 +537,7 @@ async function processIntentReportEvent(event,req) {
 
     event.event.intentReport.intent.id = intentid[0].id
     console.log('Intent id in the request ' + event.event.intentReport.intent.id)
-  
+    event.event.intentReport.href=intentid[0].href+'/intentReport/'+event.event.intentReport.id
     //   console.log(data);
     //2. insert report in grapbdb
     extractTriplesandKG(event.event.intentReport.expression.expressionValue,`insert`,'text/turtle',event.event.intentReport.name);
