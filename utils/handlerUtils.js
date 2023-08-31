@@ -530,18 +530,23 @@ function sendIntentReportEvent(name,filename,req) {
   });
 }
 
-function processIntentReportEvent(event,req) {
+async function processIntentReportEvent(event,req) {
 
- //   console.log(data);
-  //2. insert report in grapbdb
-  extractTriplesandKG(event.event.intentReport.expression.expressionValue,`insert`,'text/turtle',event.event.intentReport.name);
+  await retrieveIntentByName(event.event.intentReport.intent.id)
+  .then (intentid => {
 
- //3. insert report into mongodb and send notification
-  insertIntentReport(event.event.intentReport,req);
-  //4. create event
-//  inside the previous step as async
-//  wait(10000)
-  console.log('Posted report: '+event.event.intentReport.name)
+    event.event.intentReport.intent.id = intentid[0].id
+    console.log('Intent id in the request ' + event.event.intentReport.intent.id)
+  
+    //   console.log(data);
+    //2. insert report in grapbdb
+    extractTriplesandKG(event.event.intentReport.expression.expressionValue,`insert`,'text/turtle',event.event.intentReport.name);
+
+    //3. insert report into mongodb and send notification
+    insertIntentReport(event.event.intentReport,req);
+
+    console.log('Posted report: '+event.event.intentReport.name)
+  })
 }
 
 ////////////////////////////////////////////////////////
@@ -807,6 +812,15 @@ function checkandSendReport(payload,req) {
 
 }
 
+async function retrieveIntentByName (name) {
+ 
+  return await mongoUtils.connect().then(db => {
+    return db.collection('Intent').find(name).toArray()
+  })
+
+
+};
+
 module.exports = { 
   getExpression,
   getIntentExpressionandDeleteKG,
@@ -826,5 +840,6 @@ module.exports = {
   checkandSendReport,
   deleteAllKGData,
   createIssue,
-  processIntentReportEvent
+  processIntentReportEvent,
+  retrieveIntentByName
 				   			 };

@@ -216,8 +216,8 @@ function prepare_intents(store,id) {
     intent: get_uri_short_name(intent[0].value),
     intent_id: id,
     description: comment[0]?comment.value:"",
-    intentType: layer?get_uri_short_name(layer[0].value):"",
-    domain: owner?get_uri_short_name(owner[0].value):""
+    intentType: layer[0]?get_uri_short_name(layer[0].value):"",
+    domain: owner[0]?get_uri_short_name(owner[0].value):""
   }
 
   console.log(intent_obj)
@@ -237,9 +237,9 @@ function prepare_expectations (store) {
     var exp_obj = {
       intent: get_uri_short_name(intent[0].value),
       expectation: get_uri_short_name(exp.value),
-      expectationType: type?get_uri_short_name(type[0].value):"",
+      expectationType: type[0]?get_uri_short_name(type[0].value):"",
       description: comment[0]?comment.value:"",
-      target: target?get_uri_short_name(target[0].value):""
+      target: target[0]?get_uri_short_name(target[0].value):""
     }
     exp_array.push(exp_obj)
   })
@@ -275,8 +275,8 @@ function process_reports (expression,intentid,id) {
 
 function prepare_reports(store,id) {
   var report = store.each(undefined, RDF('type'), ICM('IntentReport'));
-  var state = store.each(report[0], ICM('handlingState'),undefined);
-  var intent = store.each(report[0], ICM('reportsAbout'),undefined);
+  var state = store.each(report[0], ICM('reportHandlingState'),undefined);
+  var intent = store.each(report[0], ICM('about'),undefined);
   var seq = store.each(report[0], ICM('reportNumber'),undefined);
   
   var report_obj = {

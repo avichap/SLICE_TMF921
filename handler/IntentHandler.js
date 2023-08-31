@@ -157,6 +157,7 @@ exports.deleteIntentbyName = function(name,req,serviceIntent) {
 
 };
 
+
 // This function is called from the RI once the intentReport as been deleted from MOngo
 //it reads the intentReport expression from mongo, parse the expresion into
 //triples and then deletes these triples from the graphdb.

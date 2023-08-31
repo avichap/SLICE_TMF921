@@ -18,30 +18,30 @@
 #
 # This intent report is sent on acceptance of the intent 
 # 
-idan:IS2_Power_Intent_Accepted
+idan:IS2_Emergency_Intent_Accepted
   a icm:IntentReport ;
   rdfs:comment "'Intent Report after accepting the intent'" ;
-  icm:reportsAbout idan:IS2_Power ;
+  icm:about idan:IS2_Emergency ;
   # put in the live timestamp from the time the report is created:
     icm:reportTimestamp            date_to_be_generated^^xsd:dateTime ;
-  icm:handlingState icm:StateAccepted ;
+  icm:reportHandlingState icm:StateAccepted ;
   icm:updateState icm:StateNoUpdate ;
   icm:reportNumber 1 ;
   cem:layer idan:service ;
-  icm:hasExpectationReport idan:S3R1E1_property ,
-                           idan:S3R1E2_reporting ; 
+  icm:hasExpectationReport idan:S2R1E1_property ,
+                           idan:S2R1E2_reporting ; 
 .
 
 
 idan:S2R1E1_property
   a icm:ExpectationReport ;
-  icm:reportsAbout idan:ES3_energy_consumption_expectation ;
+  icm:reportsAbout idan:ES2_energy_consumption_expectation ;
 .
 
          
 idan:S2R1E2_reporting
   a icm:ExpectationReport ;
-  icm:reportsAbout idan:ES3_reporting_expectation ;
+  icm:reportsAbout idan:ES2_reporting_expectation ;
   icm:reportingIntervalRemaining [ a t:Duration ;
                                    t:numericDuration idan:5M 
                             ] ;

@@ -27,16 +27,17 @@ idan:IR2_3_Emergency
 idan:TR2_3_1
   a icm:Target ;
   icm:chooseFrom [ set:resourcesOfType  idan:EmergencyService  ] 
+.
 # expectations
 # we need a construction site safety service aka. helmet service
-idan:ER1_3_1
+idan:ER2_3_1
   a icm:DeliveryExpectation ;
-  icm:target idan:TR1_3_1 ;
+  icm:target idan:TR2_3_1 ;
   icm:targetType idan:EmergencyApp
 .
 
 # we need certain performance/QoE properties for the service
-idan:ER2_3_1
+idan:ER2_3_2
   a icm:PropertyExpectation ;
   icm:target idan:TR2_3_1 ;
   logi:allOf [rdfs:member idan:CR2_3_1 ]
@@ -78,7 +79,7 @@ idan:EventR2_3_1
   imo:eventFor idan:IR2_3_Emergency
 .
 
-idan:ER2_3_2
+idan:ER2_3_3
   a icm:ReportingExpectation ;
   icm:target idan:IR2_3_Emergency  ;
   icm:reportDestination [ rdfs:member idan:IMF_Customer2 ] ;

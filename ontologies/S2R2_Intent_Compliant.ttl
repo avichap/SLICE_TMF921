@@ -19,13 +19,13 @@
 # This intent report is sent on acceptance of the service intnet to the intnet 
 # manager on business level
 # 
-idan:IS2_Power_Intent_Compliant
+idan:IS2_Emergency_Intent_Compliant
   a icm:IntentReport ;
   rdfs:comment "'Intent Report after compliant'" ;
-  icm:reportsAbout idan:IS2_Power ;
+  icm:about idan:IS2_Emergency ;
   # put in the live timestamp from the time the report is created:
     icm:reportTimestamp            date_to_be_generated^^xsd:dateTime ;
-  icm:handlingState icm:StateCompliant ;
+  icm:reportHandlingState icm:StateCompliant ;
   icm:updateState icm:StateNoUpdate ;
   icm:reportNumber 2 ;
   cem:layer idan:service ;
@@ -36,7 +36,7 @@ idan:IS2_Power_Intent_Compliant
 
 idan:S2R2E1_property
   a icm:ExpectationReport ;
-  icm:reportsAbout idan:ES3_energy_consumption_expectation ;
+  icm:reportsAbout idan:ES2_energy_consumption_expectation ;
   icm:compliant [ a icm:ConditionReport ;
                  icm:reportsAbout idan:ES2_energy_profile ;
 				 icm:EnergyProfile [icm:observed [ icm:latestValue 9.8 ;
@@ -51,7 +51,7 @@ idan:S2R2E1_property
 #
 idan:S2R2E2_reporting
   a icm:ExpectationReport ;
-  icm:reportsAbout idan:ES3_reporting_expectation ;
+  icm:reportsAbout idan:ES2_reporting_expectation ;
   icm:reportingIntervalRemaining [ a t:Duration ;
                                    t:numericDuration idan:5M 
                             ] ;
