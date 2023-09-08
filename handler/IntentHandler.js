@@ -94,20 +94,8 @@ exports.deleteIntent = function(query,resourceType,name) {
  //reads intent from mongo and then deletes objects from KG.  All in one function as async
   handlerUtils.getIntentExpressionandDeleteKG(query,resourceType); 
   
-  if (name.indexOf('Construction_ACTN')>0) {
-    var filename
-    if (name.indexOf('Construction_ACTN')>0) filename = 'IR1_2_Construction_ACTN.json'
-    else filename = 'IR2_2_Emergency_ACTN.json'
-
-    fs.readFile('./ontologies/'+filename, 'utf8', (err, data) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      handlerUtils23.deleteACTN(name,data)
-
-    })
-
+  if (name.indexOf('_ACTN')>0) {
+    handlerUtils23.deleteACTN(name)
   } 
 
     /* 2023 XXXXXXXXXXXXX Huawei IRC - Start  XXXXXXXXXXXXXXXx*/

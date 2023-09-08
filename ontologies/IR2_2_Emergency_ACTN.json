@@ -96,48 +96,6 @@
                             "CIR": 3000000,
                             "EIR": 3000000
                         }
-                    },
-                    {
-                        "etht-svc-end-point-name": "uni-02",
-                        "etht-svc-access-points": [
-                            {
-                                "access-point-id": "0",
-                                "access-node-id": "10.1.1.1",
-                                "access-ltp-id": "2000001",
-                                "access-role": "ietf-eth-tran-types:leaf-access"
-                            }
-                        ],
-                        "outer-tag": {
-                            "tag-type": "ietf-eth-tran-types:classify-c-vlan",
-                            "vlan-value": 48
-                        },
-                        "service-classification-type": "ietf-eth-tran-types:vlan-classification",
-                        "ingress-egress-bandwidth-profile": {
-                            "bandwidth-profile-type": "ietf-eth-tran-types:mef-10-bwp",
-                            "CIR": 3000000,
-                            "EIR": 3000000
-                        }
-                    },
-                    {
-                        "etht-svc-end-point-name": "uni-03",
-                        "etht-svc-access-points": [
-                            {
-                                "access-point-id": "0",
-                                "access-node-id": "10.1.1.3",
-                                "access-ltp-id": "1000001",
-                                "access-role": "ietf-eth-tran-types:leaf-access"
-                            }
-                        ],
-                        "outer-tag": {
-                            "tag-type": "ietf-eth-tran-types:classify-c-vlan",
-                            "vlan-value": 49
-                        },
-                        "service-classification-type": "ietf-eth-tran-types:vlan-classification",
-                        "ingress-egress-bandwidth-profile": {
-                            "bandwidth-profile-type": "ietf-eth-tran-types:mef-10-bwp",
-                            "CIR": 3000000,
-                            "EIR": 3000000
-                        }
                     }
                 ]
             }

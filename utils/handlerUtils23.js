@@ -71,21 +71,29 @@ function postACTN(name,data,id,parent_id) {
     process_ACTN(name,id,parent_id)
   
 }
-function deleteACTN(name,data) {
+function deleteACTN(name) {
   const url_huawei = `http://${server}:18181/restconf/data`
   const url_other = `http://${server}:28181/restconf/data`
 
+  var tunnel_name=''
+  var service_name=''
+  if (name.indexOf('Construction_ACTN'>0)) {
+    tunnel_name='IR1_2_Construction_tunnel'
+    service_name='IR1_2_Construction_service'
+  } else {
+    tunnel_name='IR2_2_Emergency_tunnel'
+    service_name='IR2_2_Emergency_service'
+
+  }
   
-    try {
-      var payload = JSON.parse(data)
-    } catch (err) {
-      console.log('err '+ err)
-    }
     
-    post(url_huawei+"/ietf-eth-tran-service:etht-svc",payload.huawei_service,'DELETE');
-    post(url_huawei+"/ietf-te:te/tunnels",payload.huawei_tunnel,'DELETE');
-    post(url_other+"/ietf-eth-tran-service:etht-svc",payload.other_service,'DELETE');
-    post(url_other+"/ietf-te:te/tunnels",payload.other_tunnel,'DELETE')
+
+    post(url_huawei+`/ietf-eth-tran-service:etht-svc/etht-svc-instances=${service_name}/etht-svc-end-points=uni-01`,'','DELETE');
+    post(url_huawei+`/ietf-eth-tran-service:etht-svc/etht-svc-instances=${service_name}`,'','DELETE');
+    post(url_huawei+`/ietf-te:te/tunnels/tunnel=${tunnel_name}`,'','DELETE');
+    post(url_other+`/ietf-eth-tran-service:etht-svc/etht-svc-instances=${service_name}/etht-svc-end-points=uni-04`,'','DELETE');
+    post(url_other+`/ietf-eth-tran-service:etht-svc/etht-svc-instances=${service_name}`,'','DELETE');
+    post(url_other+`/ietf-te:te/tunnels/tunnel=${tunnel_name}`,'','DELETE')
   
 
 }
