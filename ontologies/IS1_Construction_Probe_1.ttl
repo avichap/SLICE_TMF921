@@ -13,81 +13,83 @@
 @prefix mf: <http://www..example.org/mf#> .
 @prefix cem: <http://tio.labs.tmforum.org/tio/v1.0.0/CatalystExtensionModel#> .
 @prefix   iv: <http://tio.models.tmforum.org/tio/v3.2.0/IntentValidity#> .
-# intent
-idan:IR2_3_Emergency
+
+#intent
+idan:IS1_Construction_Probe_1
   a icm:Intent ;
-  cem:layer idan:resource ;
-  imo:intentOwner idan:EdgeCloud ;
-  icm:hasExpectation idan:ER2_3_1,
-                     idan:ER2_3_2,
-					 idan:ER2_3_3
+  cem:layer idan:service ;
+  imo:intentOwner idan:Service ;
+  rdfs:comment "'Intent for helmet service'" ;
+  icm:hasExpectation idan:ES1_helmet_expectation_Probe_1,
+                       idan:ES1_helmet_property_Probe_1,  
+                        idan:ES1_reporting_expectation_Probe_1
+     .
+
+idan:ES1_helmet_expectation_Probe_1
+  a icm:DeliveryExpectation ;
+    icm:target idan:TransportNetwork ;
 .
 
 # targets
-idan:TR2_3_1
+idan:TransportNetwork
   a icm:Target ;
-  icm:chooseFrom [ set:resourcesOfType  idan:EmergencyService  ] 
-.
-# expectations
-# we need a construction site safety service aka. helmet service
-idan:ER2_3_1
-  a icm:DeliveryExpectation ;
-  icm:target idan:TR2_3_1 ;
-  icm:targetType idan:EmergencyApp
+  icm:allOf [ rdfs:member idan:HelmetService]
 .
 
 # we need certain performance/QoE properties for the service
-idan:ER2_3_2
+idan:ES1_helmet_property_Probe_1
   a icm:PropertyExpectation ;
-  icm:target idan:TR2_3_1 ;
-  logi:allOf [rdfs:member idan:CR2_3_1 ]
+  icm:target idan:TransportNetwork ;
+  logi:allOf [rdfs:member idan:CS1_Transport ;
+               rdfs:member idan:CS1_RAN ;
+               rdfs:member idan:CS1_Cloud               ]
 .
 
 # conditions
 
-idan:CR2_3_1
+idan:CS1_Transport
   a icm:Condition ;
   rdfs:label "" ;
-  idan:AccessMode [ rdfs:member idan:5GSA ];
-  idan:UploadBandwidth [ quan:greater
-                 [ rdf:value "100"^^xsd:decimal ;
+  idan:Bandwidth [ quan:greater
+                 [ rdf:value "10000"^^xsd:decimal ;
                    icm:unit80000 "'Mbps'"] 
                ];
-  idan:Latency [ quan:smaller
-                 [ rdf:value "0.2"^^xsd:decimal ;
+  idan:Delay [ quan:smaller
+                 [ rdf:value "1"^^xsd:decimal ;
                    icm:unit80000 "'s'"] 
                ];
-  idan:security cem:ipsec;
-  idan:computing [ idan:containers [ rdf:value "200"^^xsd:decimal ;
-                                     idan:vcpu "8"^^xsd:decimal ;
-                                              idan:memory "16"^^xsd:decimal;
-                                              idan:storage "200"^^xsd:decimal ]
-                     ]
 .
-
+idan:CS1_RAN
+  a icm:Condition ;
+  rdfs:label "" ;
+.
+idan:CS1_Cloud
+  a icm:Condition ;
+  rdfs:label "" ;
+.
+			   
 # reporting
 
 # event for time-based reporting. Triggereing every 5 minutes
-idan:EventR2_3_1
+idan:EventS1
   a rdfs:Class ;
   rdfs:subClassOf imo:Event ;
-  logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventR1_3_1 ;
-                                          rdfs:member idan:IR1_3_Construction ]]  ,
-                    [t:hasDuration idan:5M ] ;
-            t:before [ t:hasBeginning imo:Now ] ;
+  logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventS1 ;
+                                              rdfs:member idan:IS1_Construction_Probe_1 ]]  ,
+                         [t:hasDuration idan:5M ] ;
+                t:before [ t:hasBeginning imo:Now ] ;
          ] ;
-  imo:eventFor idan:IR2_3_Emergency
+  imo:eventFor idan:IS1_Construction_Probe_1
 .
 
-idan:ER2_3_3
+idan:ES1_reporting_expectation_Probe_1
   a icm:ReportingExpectation ;
-  icm:target idan:IR2_3_Emergency  ;
-  icm:reportDestination [ rdfs:member idan:IMF_Customer2 ] ;
+  icm:target idan:IS1_Construction_Probe_1  ;
+  icm:reportDestination [ rdfs:member idan:Operations ] ;
   icm:reportTriggers [ rdfs:member imo:IntentRejected ; 
                        rdfs:member imo:IntentAccepted ;
                        rdfs:member imo:IntentDegrades ;
                        rdfs:member imo:IntentComplies ;
                        rdfs:member imo:IntentRemoval ;
-                       rdfs:member idan:EventR2_3_1 ]
+                       rdfs:member idan:EventS1 ]
 .
-

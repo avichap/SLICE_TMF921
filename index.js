@@ -7,6 +7,7 @@ const fs = require('fs'),
       soUtils = require('./utils/soUtils'),
       saUtils = require('./utils/saUtils'),
       swaggerUtils = require('./utils/swaggerUtils');
+      const handlerUtils23 = require('./utils/handlerUtils23');
 
 const {TError, TErrorEnum, sendError} = require('./utils/errorUtils');
 
@@ -15,7 +16,7 @@ const swaggerTools = require('swagger-tools');
 
 const serverPort = 8092;
 
-const monitorIssuesInterval = 60; // seconds
+const intentReportInterval = 60; // seconds
 
 // Correct the url in swagger-ui-dist that points to some demo (like the petstore)
 // And add additional useful options
@@ -63,13 +64,20 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
   // using the more up-to-date swagger-ui-dist - not the default app.use(middleware.swaggerUi())
   app.use(middleware.swaggerUi({ swaggerUiDir: path.join(__dirname, 'node_modules', 'swagger-ui-dist') }));
 
-  /* XXXXXXXXXXXXX Ericsson IRC - Start  XXXXXXXXXXXXXXXx*/
+
   // Login to SO and store the token obtained.
   // Since the token needs to be obtained only once hence it is done during
   // initilization rather than getting it each time an intent is created or deleted
   //soUtils.storeSoTokenAfterLogin();
 
-  /* XXXXXXXXXXXXX Ericsson IRC - End  XXXXXXXXXXXXXXXx*/
+  // Monitor issues that are reported by the SA in issue repo of graphDB
+  var timerId = setTimeout(function sendReport() {
+    console.log("intentReportInterval expired, sending new report");
+    timerId = setTimeout(sendReport, intentReportInterval * 1000);
+    handlerUtils23.generateReport();
+
+  }, intentReportInterval * 1000);
+
 
   // Start the server
   http.createServer(app).listen(serverPort, function () {

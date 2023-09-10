@@ -9,7 +9,7 @@
          "te-bandwidth": {
             "ietf-otn-tunnel:otn": {
                "ietf-otn-tunnel:odu-type": "ietf-layer1-types:ODUflex",
-               "ietf-otn-tunnel:gfp-n": 3
+               "ietf-otn-tunnel:gfp-n": 5
             }
          },
          "encoding": "ietf-te-types:lsp-encoding-oduk",
@@ -88,13 +88,13 @@
                         ],
                         "outer-tag": {
                             "tag-type": "ietf-eth-tran-types:classify-c-vlan",
-                            "vlan-value": 47
+                            "vlan-value": 49
                         },
                         "service-classification-type": "ietf-eth-tran-types:vlan-classification",
                         "ingress-egress-bandwidth-profile": {
                             "bandwidth-profile-type": "ietf-eth-tran-types:mef-10-bwp",
-                            "CIR": 3000000,
-                            "EIR": 3000000
+                            "CIR": 5000000,
+                            "EIR": 5000000
                         }
                     }
                 ]
@@ -112,7 +112,7 @@
          "te-bandwidth": {
             "ietf-otn-tunnel:otn": {
                "ietf-otn-tunnel:odu-type": "ietf-layer1-types:ODUflex",
-               "ietf-otn-tunnel:gfp-n": 3
+               "ietf-otn-tunnel:gfp-n": 5
             }
          },
          "encoding": "ietf-te-types:lsp-encoding-oduk",
@@ -191,13 +191,13 @@
                         ],
                         "outer-tag": {
                             "tag-type": "ietf-eth-tran-types:classify-c-vlan",
-                            "vlan-value": 47
+                            "vlan-value": 49
                         },
                         "service-classification-type": "ietf-eth-tran-types:vlan-classification",
                         "ingress-egress-bandwidth-profile": {
                             "bandwidth-profile-type": "ietf-eth-tran-types:mef-10-bwp",
-                            "CIR": 3000000,
-                            "EIR": 3000000
+                            "CIR": 5000000,
+                            "EIR": 5000000
                         }
                     }
                 ]

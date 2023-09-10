@@ -54,12 +54,15 @@ exports.processIntent = function(req) {
   var serviceOrder;
   var name;
   var probe=false;
-  if (expression.indexOf("Probe") > 0) {
+  if (expression.indexOf("Probe_1") > 0) {
     serviceOrder = '';
-    name = 'Probe;'
+    name = 'Probe_1'
     probe=true;
-  }
-  else if (expression.indexOf("S1") > 0) {
+  } else if (expression.indexOf("Probe_2") > 0) {
+    serviceOrder = '';
+    name = 'Probe_2'
+    probe=true;
+  }  else if (expression.indexOf("S1") > 0) {
     serviceOrder = 'service_order_HELMET_SERVICE_CREATE.json';
     name = 'S1;'
   }
@@ -82,9 +85,10 @@ exports.processIntent = function(req) {
 
 /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
   
-  createIntentReport(req,name);
+  createIntentReport(req,name,id);
   
-  if (!probe) sendCreateServiceOrder(id,serviceOrder);
+
+  if ((!probe)&&(!sendResource)) sendCreateServiceOrder(id,serviceOrder);
 
 
 };
@@ -128,19 +132,22 @@ function sendCreateServiceOrder(id,serviceOrder) {
 }
 
 
-function createIntentReport(req,name) {
+function createIntentReport(req,name,id) {
   var filename;
   var children = [];
   var reports = [];
- if (name.indexOf("Probe") >= 0) {
-    reports = ['S1Probe_Intent_Accepted','S1Probe_Intent_Degraded']
- }
- else if (name.indexOf("S1") >= 0) {
+  if (name.indexOf("Probe_1") >= 0) {
+    reports = ['S1Probe1R1_Intent_Accepted','S1Probe1R1_Intent_Degraded']
+   handlerUtils23.addGenerateIntentReport('S1Probe1R1_Intent_Degraded',req)
+} else if (name.indexOf("Probe_2") >= 0) {
+  reports = ['S1Probe2R1_Intent_Accepted','S1Probe2R1_Intent_Compliant']
+ handlerUtils23.addGenerateIntentReport('S1Probe2R1_Intent_Compliant',req)
+} else if (name.indexOf("S1") >= 0) {
     reports = ['S1R1_Intent_Accepted','S1R2_Intent_Compliant']
     children = [...S1_children]
  }
  else if (name.indexOf("S2") >= 0) {
-    reports = ['S2R1_Intent_Accepted','S2R2_Intent_Compliant']
+    reports = ['S2R1_Intent_Accepted','S2R2_Intent_Compliant','S1R3_Intent_Degraded']
     children = [...S2_children]
  }
  else if (name.indexOf("S3") >= 0) {
@@ -261,7 +268,14 @@ exports.deleteIntent = function(query, resourceType,intentname,req) {
   var serviceOrder;
   var name;
   var children
-  if (intentname.indexOf("S1") > 0) {
+  var probe=false;
+  if (intentname.indexOf("Probe") > 0) {
+    serviceOrder = '';
+    name = 'Probe;'
+    probe=true;
+    children = []
+  }
+  else if (intentname.indexOf("S1") > 0) {
     serviceOrder = 'service_order_HELMET_SERVICE_DELETE.json';
     name = 'S1;'
     children = [...S1_children]
@@ -277,10 +291,10 @@ exports.deleteIntent = function(query, resourceType,intentname,req) {
     children = [...S3_children]
 }
   
-  sendDeleteServiceOrder(serviceOrder,query.id)
+  if ((!probe)&&(!sendResource)) sendDeleteServiceOrder(serviceOrder,query.id)
 
-  console.log('query.id: ' + query.id)
-  console.log('resourceType: ' + resourceType)
+//  console.log('query.id: ' + query.id)
+//  console.log('resourceType: ' + resourceType)
   //reads intent from mongo and then deletes objects from KG.  All in one function as async
   handlerUtils.getIntentExpressionandDeleteKG(query, resourceType);
   //delete children intent
@@ -332,8 +346,8 @@ function sendDeleteServiceOrder(serviceOrder,id) {
 //triples and then deletes these triples from the graphdb.
 exports.deleteIntentReports = function(id, resourceType) {
 
-  console.log('intentid: ' + id)
-  console.log('resourceType: ' + resourceType)
+//  console.log('intentid: ' + id)
+//  console.log('resourceType: ' + resourceType)
   //reads intent report from mongo and then deletes objects from KG.  All in one function as async
   handlerUtils.getIntentReportExpressionandDeleteKG(id, resourceType);
 };

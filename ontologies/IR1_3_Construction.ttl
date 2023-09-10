@@ -83,7 +83,7 @@ idan:EventR1_3_1
 
 idan:ER1_3_3
   a icm:ReportingExpectation ;
-  icm:target idan:IR1_1_Construction  ;
+  icm:target idan:IR1_3_Construction  ;
   icm:reportDestination [ rdfs:member idan:IMF_Customer1 ] ;
   icm:reportTriggers [ rdfs:member imo:IntentRejected ; 
                        rdfs:member imo:IntentAccepted ;

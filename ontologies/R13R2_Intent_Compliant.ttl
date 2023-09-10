@@ -19,13 +19,13 @@
 # This intent report is sent on acceptance of the service intnet to the intnet 
 # manager on business level
 # 
-idan:IR13R2_Power_Intent_Compliant
+idan:IR13R2_Construction_Intent_Compliant
   a icm:IntentReport ;
   rdfs:comment "'Intent Report after compliant'" ;
-  icm:reportsAbout idan:IR1_3_Construction ;
+  icm:about idan:IR1_3_Construction ;
   # put in the live timestamp from the time the report is created:
     icm:reportTimestamp            date_to_be_generated^^xsd:dateTime ;
-  icm:handlingState icm:StateCompliant ;
+  icm:reportHandlingState icm:StateCompliant ;
   icm:updateState icm:StateNoUpdate ;
   icm:reportNumber 2 ;
   cem:layer idan:resource ;
@@ -35,17 +35,21 @@ idan:IR13R2_Power_Intent_Compliant
 
 
 idan:R13R2E1_property
-  a icm:ExpectationReport ;
-  icm:reportsAbout idan:ES1_energy_consumption_expectation ;
-  icm:compliant [ a icm:ConditionReport ;
-                 icm:reportsAbout idan:ES1_energy_profile ;
-				 icm:EnergyProfile [icm:observed [ icm:latestValue 9.8 ;
-                                                   icm:unit idan:EC1_unit ;
-									             ];
-									];
-				 icm:reason icm:ReasonConditionTrue ;
-			    ] 
+  a icm:PropertyExpectationReport ;
+    icm:about idan:ER1_3_2 ;
+    icm:result true ; 
+    icm:resultFrom idan:CR3 
 .
+
+idan:CR3
+  a icm:Condition ;
+  icm:about idan:CR1_3_1 ; 
+  rdfs:label "" ;
+  icm:observed [ idan:AccessMode idan:4G ;
+                   idan:UploadBandwidth 5.5;
+                   idan:Latency 1.2;
+				   idan:security cem:none;
+                   idan:containers "'50/2/4/20/16'" ]
 			   
 ##### Reporting Expectation Report ############################################
 #

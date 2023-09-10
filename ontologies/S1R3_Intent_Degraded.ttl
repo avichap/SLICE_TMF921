@@ -19,43 +19,39 @@
 # This intent report is sent on acceptance of the service intnet to the intnet 
 # manager on business level
 # 
-idan:IR23R2_Emergency_Intent_Compliant
+idan:IS1_Construction_Intent_Degraded
   a icm:IntentReport ;
   rdfs:comment "'Intent Report after compliant'" ;
-  icm:about idan:IR2_3_Emergency ;
+  icm:about idan:IS1_Construction ;
   # put in the live timestamp from the time the report is created:
     icm:reportTimestamp            date_to_be_generated^^xsd:dateTime ;
-  icm:reportHandlingState icm:StateCompliant ;
+  icm:reportHandlingState icm:StateDegraded ;
   icm:updateState icm:StateNoUpdate ;
-  icm:reportNumber 2 ;
-  cem:layer idan:resource ;
-  icm:hasExpectationReport idan:R23R2E1_property ,
-                           idan:R23R2E2_reporting ; 
+  icm:reportNumber 3 ;
+  cem:layer idan:service ;
+  icm:hasExpectationReport idan:S1R2E1_property ,
+                           idan:S1R2E2_reporting ; 
 .
 
 
-idan:R23R2E1_property
-  a icm:PropertyExpectationReport ;
-    icm:about idan:ER2_3_2 ;
-    icm:result true ; 
-    icm:resultFrom idan:CR3 
+idan:S1R2E1_property
+  a icm:ExpectationReport ;
+  icm:reportsAbout idan:ES1_energy_consumption_expectation ;
+  icm:compliant [ a icm:ConditionReport ;
+                 icm:reportsAbout idan:ES1_energy_profile ;
+				 icm:EnergyProfile [icm:observed [ icm:latestValue 9.8 ;
+                                                   icm:unit idan:EC1_unit ;
+									             ];
+									];
+				 icm:reason icm:ReasonConditionTrue ;
+			    ] 
 .
-
-idan:CR3
-  a icm:Condition ;
-  icm:about idan:CR2_3_1 ; 
-  rdfs:label "" ;
-  icm:observed [ idan:AccessMode idan:5GSA ;
-                   idan:UploadBandwidth 6.5;
-                   idan:Latency 0.9;
-				   idan:security cem:ipsec;
-                   idan:containers "'200/8/16/200'" ]
 			   
 ##### Reporting Expectation Report ############################################
 #
-idan:R23R2E2_reporting
+idan:S1R2E2_reporting
   a icm:ExpectationReport ;
-  icm:reportsAbout idan:ES2_reporting_expectation ;
+  icm:reportsAbout idan:ES1_reporting_expectation ;
   icm:reportingIntervalRemaining [ a t:Duration ;
                                    t:numericDuration idan:5M 
                             ] ;

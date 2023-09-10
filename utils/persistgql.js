@@ -38,6 +38,61 @@ mutation insert_intent_expectations($expectations: [intentExpectations_insert_in
   }
 }`;
 
+const INSERT_OBJECTIVE = gql`
+mutation insert_objectives($objectives: [objectives_insert_input!]!) {
+  insert_objectives(objects: $objectives) {
+      returning {
+          objective
+      }
+  }
+}`;
+
+const INSERT_VALUE= gql`
+mutation insert_objectiveValues($objectiveValues: [objectiveValues_insert_input!]!) {
+  insert_objectiveValues(objects: $objectiveValues) {
+      returning {
+          objective
+      }
+  }
+}`;
+
+const UPDATE_VALUE= gql`
+mutation update_objectiveValues($objective: String!, $intent: String!, $value: objectiveValues_set_input!) {
+  update_objectiveValues(
+    where: { 
+      _and: [
+        { objective: {_eq: $objective}},
+        { intent: {_eq: $intent}}
+      ]}, _set: $value
+  ) {
+    returning {
+      value
+    }
+  }
+}
+`;
+
+const QUERY_VALUE = gql `
+query getValues($objective: String!, $intent: String!) {
+  objectiveValues(where: { 
+    _and: [
+      { objective: {_eq: $objective}},
+      { intent: {_eq: $intent}}
+    ]}) {
+    objective
+    value
+  }
+}
+`;
+const QUERY_INTENT = gql `
+query getIntents($intent_id: String!) {
+  intents(where: {intent_id: {_eq: $intent_id}}) {
+    intent
+    intent_id
+  }
+}
+`;
+
 const INSERT_HIERARCHY = gql`
    mutation insert_intentsintents($intentsintents: [intentsintents_insert_input!]!) {
       insert_intentsintents(objects: $intentsintents) {
@@ -48,14 +103,7 @@ const INSERT_HIERARCHY = gql`
        }
    }`;
 
-const QUERY_INTENT = gql `
-query getIntents($intent_id: String!) {
-  intents(where: {intent_id: {_eq: $intent_id}}) {
-    intent
-    intent_id
-  }
-}
-`
+
 const INSERT_REPORT = gql`
 mutation insert_intentReports($reports: [intentReports_insert_input!]!) {
   insert_intentReports(objects: $reports) {
@@ -66,6 +114,25 @@ mutation insert_intentReports($reports: [intentReports_insert_input!]!) {
       }
   }
   }
+`
+
+const DELETE_OBJECTIVES = gql`
+mutation deleteObjectives( $intent:String!){
+  delete_objectives(where: {intent: {_eq: $intent}}){
+      returning {
+          objective
+      }
+  }
+}
+`
+const DELETE_VALUES = gql`
+mutation deleteValues( $intent:String!){
+  delete_objectiveValues(where: {intent: {_eq: $intent}}){
+      returning {
+          objective
+      }
+  }
+}
 `
 
 const DELETE_EXPECTATIONS = gql`
@@ -131,7 +198,31 @@ function processExpectations (expectations) {
   })
   
 };
-           
+   
+function processObjectives (objectives) {
+  return new Promise(function (resolve, reject) {
+    try {
+        resolve(client.mutate({mutation: INSERT_OBJECTIVE,variables: {objectives}}))
+      } catch (err) {
+        console.log('error procesing objectives:' + objectives)
+        return reject(err)
+    } 
+  })
+  
+};
+
+
+
+function queryValues (intent,objective) {
+  return new Promise(function (resolve, reject) {
+    try {
+      resolve(client.query({query: QUERY_VALUE,variables: {intent,objective}}))
+    } catch (err) {
+      return reject (err)
+    } 
+  })
+}
+
 function queryHierarchy (intent_id) {
   return new Promise(function (resolve, reject) {
     try {
@@ -142,6 +233,12 @@ function queryHierarchy (intent_id) {
   })
 }
 
+function processValues (result,objectiveValues) {
+  return new Promise(function (resolve, reject) {
+    resolve(client.mutate({mutation: INSERT_VALUE,variables: {objectiveValues}}))
+    
+  })
+};
 function hierarchyResults(result) {
   return new Promise(function (resolve, reject) {
     var res 
@@ -184,6 +281,29 @@ function processReports (reports) {
   })
 };
   
+function deleteObjectives (intent) {
+  return new Promise(function (resolve, reject) {
+    try {
+      resolve(client.mutate({mutation: DELETE_OBJECTIVES,variables: {intent}}))
+    } catch (err) {
+      console.log('error deleting objectives:' + intent)
+      return reject (err)
+    } 
+  })
+}
+
+function deleteValues (intent) {
+  return new Promise(function (resolve, reject) {
+    try {
+      resolve(client.mutate({mutation: DELETE_VALUES,variables: {intent}}))
+    } catch (err) {
+      console.log('error deleting values:' + intent)
+      return reject (err)
+    } 
+  })
+}
+
+
 function deleteExpectations (intent) {
   return new Promise(function (resolve, reject) {
     try {
@@ -230,11 +350,16 @@ function deleteIntents (intent) {
 module.exports = { 
   processIntents,
   processExpectations,
+  processObjectives,
+  processValues,
+  queryValues,
   processHierarchy,
   queryHierarchy,
   hierarchyResults,
   processReports,
   deleteExpectations,
+  deleteObjectives,
+  deleteValues,
   deleteReports,
   deleteHierarchy,
   deleteIntents

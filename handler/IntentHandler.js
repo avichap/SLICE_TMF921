@@ -63,15 +63,17 @@ if (req.body.name.indexOf('ACTN')>0) {
     } else if (expression.indexOf("R3_3") >= 0) {
       reports = ['R33R1_Intent_Accepted','R33R2_Intent_Compliant']
     } else if (expression.indexOf("R2_3") >= 0) {
-      reports = ['R23R1_Intent_Accepted','R23R2_Intent_Compliant']
+      reports = ['R13R3_Intent_Degraded','R23R1_Intent_Accepted','R23R2_Intent_Compliant']
     } else if (expression.indexOf("R2_1") >= 0) {
       reports = ['R21R1_Intent_Accepted','R21R2_Intent_Compliant']
+      handlerUtils23.addGenerateIntentReport('R21R2_Intent_Compliant',req)
     } else if (expression.indexOf("R2_2") >= 0) {
       reports = ['R22R1_Intent_Accepted','R22R2_Intent_Compliant']
     } else if (expression.indexOf("R1_3") >= 0) {
       reports = ['R13R1_Intent_Accepted','R13R2_Intent_Compliant']
     } else if (expression.indexOf("R1_1") >= 0) {
       reports = ['R11R1_Intent_Accepted','R11R2_Intent_Compliant']
+      handlerUtils23.addGenerateIntentReport('R11R2_Intent_Compliant',req)
     } else if (expression.indexOf("R1_2") >= 0) {
       reports = ['R12R1_Intent_Accepted','R12R2_Intent_Compliant']
     }
@@ -88,8 +90,8 @@ if (req.body.name.indexOf('ACTN')>0) {
 //triples and then deletes these triples from the graphdb.
 exports.deleteIntent = function(query,resourceType,name) {
 
-  console.log('query.id: '+query.id)
-  console.log('resourceType: '+resourceType)
+//  console.log('query.id: '+query.id)
+//  console.log('resourceType: '+resourceType)
  
  //reads intent from mongo and then deletes objects from KG.  All in one function as async
   handlerUtils.getIntentExpressionandDeleteKG(query,resourceType); 
@@ -111,8 +113,8 @@ exports.deleteIntentbyName = function(name,req,serviceIntent) {
   query.criteria.name = name
 //  query = swaggerUtils.updateQueryServiceType(query, req,'name');
   var resourceType = 'Intent'
-  console.log('name: '+name)
-  console.log('resourceType: '+resourceType)
+//  console.log('name: '+name)
+//  console.log('resourceType: '+resourceType)
   mongoUtils.connect().then(db => {
   db.collection(resourceType)
   .find(query.criteria, query.options).toArray()
@@ -151,8 +153,8 @@ exports.deleteIntentbyName = function(name,req,serviceIntent) {
 //triples and then deletes these triples from the graphdb.
 exports.deleteIntentReports = function(id,resourceType) {
 
-  console.log('intentid: '+id)
-  console.log('resourceType: '+resourceType)
+//  console.log('intentid: '+id)
+//  console.log('resourceType: '+resourceType)
  //reads intent from mongo and then deletes objects from KG.  All in one function as async
  handlerUtils.getIntentReportExpressionandDeleteKG(id,resourceType); 
 

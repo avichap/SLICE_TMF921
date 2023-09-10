@@ -22,10 +22,10 @@
 idan:IR33R2_Power_Intent_Compliant
   a icm:IntentReport ;
   rdfs:comment "'Intent Report after compliant'" ;
-  icm:reportsAbout idan:IR3_3_Power ;
+  icm:about idan:IR3_3_Power ;
   # put in the live timestamp from the time the report is created:
     icm:reportTimestamp            date_to_be_generated^^xsd:dateTime ;
-  icm:handlingState icm:StateCompliant ;
+  icm:reportHandlingState icm:StateCompliant ;
   icm:updateState icm:StateNoUpdate ;
   icm:reportNumber 2 ;
   cem:layer idan:resource ;

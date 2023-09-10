@@ -11,6 +11,8 @@ var fs = require('fs'),
     path = require('path'),
     jsyaml = require('js-yaml');
 
+const Math = require('mathjs');
+
 const {TError, TErrorEnum, sendError} = require('./errorUtils');
 const swaggerUtils = require('./swaggerUtils');
 const mongoUtils = require('./mongoUtils');
@@ -20,6 +22,7 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const uuid = require('uuid');
 const notificationUtils = require('../utils/notificationUtils');
 const fetch = require('node-fetch');
+const processObjectives = require('./processObjectives');
 
 const server = process.env.GRAPHQL_ENGINE_URL!==undefined ? process.env.GRAPHQL_ENGINE_URL:"10.220.239.74"
 console.log("Server: "+server)
@@ -31,6 +34,11 @@ const CEM = $rdf.Namespace("http://tio.labs.tmforum.org/tio/v1.0.0/CatalystExten
 const MET = $rdf.Namespace("http://www.sdo2.org/TelecomMetrics/Version_1.0#");
 const T = $rdf.Namespace("http://www.w3.org/2006/time#");
 const IMO = $rdf.Namespace("http://tio.models.tmforum.org/tio/v3.2.0/IntentManagmentOntology#");
+const LOGI = $rdf.Namespace("http://tio.models.tmforum.org/tio/v3.2.0/LogicalOperators#");
+const handlerUtils = require('../utils/handlerUtils');
+
+var generateIntentReport=[];
+
 
 const persist =require('./persistgql');
 
@@ -45,8 +53,9 @@ var graphDBContext = null;
 // property from theintent request                  //  
 //////////////////////////////////////////////////////
 function postIntentReportCreationEvent(event) {
-    const url = `http://${server}:8092/tmf-api/intent/v4/listener/intentReportCreateEvent`
-    console.log('XXX: In 23 '+url);
+  const url = `http://${server}:8092/tmf-api/intent/v4/listener/intentReportCreateEvent`
+//  const url = `http://localhost:8092/tmf-api/intent/v4/listener/intentReportCreateEvent`
+  //console.log('XXX: In 23 '+url);
     
     post(url,event)
 }
@@ -98,7 +107,7 @@ function deleteACTN(name) {
 
 }
 async function post(url,body,method) {
-    console.log ('Post message to: '+url)
+//    console.log ('Post message to: '+url)
 
   const response = await fetch(url, {
   method: method?method:'POST',
@@ -112,7 +121,7 @@ async function post(url,body,method) {
     if (!response.ok) {
       throw new Error('Http response was not OK for '+url);
     }
-    console.log("POST Order sent successfully!");
+//    console.log("POST Order sent successfully!");
   })
   .catch((error) => {
     console.error('POST failed with error:', error);
@@ -168,10 +177,12 @@ async function process_intents (expression,id,version) {
  try {
    $rdf.parse(expression, store, uri, mimeType,function (){
      var intents = prepare_intents (store,id)
-     var expectations = prepare_expectations (store)
+     var values = prepare_expectations (store)
+     var expectations = values [0]
+     var objectives = values [1]
      var hierarchy = prepare_hierarchy (store,version)
      
-     insert_intents(intents,expectations,hierarchy,version)
+     insert_intents(intents,expectations,objectives,hierarchy,version)
  
   })
  }
@@ -180,9 +191,10 @@ async function process_intents (expression,id,version) {
  }
 }
 
-async function insert_intents (intents,expectations,hierarchy,version) {
+async function insert_intents (intents,expectations,objectives,hierarchy,version) {
   const response = await persist.processIntents (intents)
   .then ((result) => persist.processExpectations (expectations))
+  .then ((result) => persist.processObjectives (objectives))
   .then ((result) => persist.queryHierarchy (version))
   .then ((result) => persist.hierarchyResults(result))  
   .then ((parent) => persist.processHierarchy(parent,hierarchy)) 
@@ -237,10 +249,14 @@ function prepare_expectations (store) {
   var expectations = store.each(intent[0], ICM('hasExpectation'),undefined);
   
   var exp_array = []
+  var obj_array = []
   expectations.forEach(exp => {
     var type = store.each(exp, RDF('type'),undefined);
     var target = store.each(exp, ICM('target'),undefined);
     var comment = store.each(exp, RDFS('comment'),undefined);
+
+    //objectives
+    obj_array.push(...processObjectives.objectives(store,exp,get_uri_short_name(intent[0].value)))
 
     var exp_obj = {
       intent: get_uri_short_name(intent[0].value),
@@ -252,7 +268,7 @@ function prepare_expectations (store) {
     exp_array.push(exp_obj)
   })
   
-  return exp_array
+  return [exp_array, obj_array]
 
 };
 
@@ -262,7 +278,7 @@ function prepare_hierarchy (store,child) {
   
 };
 
-function process_reports (expression,intentid,id) {
+async function process_reports (expression,intentid,id) {
   var uri = 'http://www.example.org/IDAN3#';
   var mimeType = 'text/turtle';
 
@@ -271,9 +287,20 @@ function process_reports (expression,intentid,id) {
  //create rdf object
  try {
    $rdf.parse(expression, store, uri, mimeType,function (){
-     var reports = prepare_reports (store,id)
+     var values = prepare_reports (store,id)
+     var  reports = values [0]
+     var objectives = values [1]
 
     persist.processReports (reports)
+    .then ((result) => {
+
+      objectives.forEach (obj => {
+        persist.queryValues (obj.intent,obj.objective)
+        .then ((result) => persist.processValues (result,obj))
+      })
+
+
+    })
   })
  }
  catch (err) {
@@ -287,6 +314,7 @@ function prepare_reports(store,id) {
   var intent = store.each(report[0], ICM('about'),undefined);
   var seq = store.each(report[0], ICM('reportNumber'),undefined);
   
+  var obj_array = []
   var report_obj = {
     intentReport: get_uri_short_name(report[0].value),
     intentReport_id: id,
@@ -295,14 +323,19 @@ function prepare_reports(store,id) {
     sequence: seq?seq[0].value:""
   }
 
+  //objectives
+  obj_array.push(...processObjectives.values(store,report[0],get_uri_short_name(intent[0].value)))
+
   console.log(report_obj)
-  return report_obj
+  return [report_obj, obj_array]
 }
 
 function delete_intents (intent) {
   console.log("Deleting intent: "+intent)
   try {
-    persist.deleteExpectations (intent)
+    persist.deleteValues(intent)
+    .then((result) => persist.deleteObjectives (intent))
+    .then((result) => persist.deleteExpectations (intent))
     .then((result) => persist.deleteReports (intent))
     .then((result) => persist.deleteHierarchy (intent))
     .then((result) => persist.deleteIntents (intent))
@@ -312,11 +345,140 @@ function delete_intents (intent) {
  }
 }
 
+function addGenerateIntentReport(intentReport,req){
+  if (generateIntentReport.indexOf(intentReport) < 0) 
+    generateIntentReport.push({name:intentReport,req: req, reportNumbers:0})
+}
+function removeGenerateIntentReport(intentReport){
+  const index = generateIntentReport.indexOf(intentReport);
+  if (index > -1) { 
+    generateIntentReport.splice(index, 1); 
+  } 
+}
+
+function addTimestamp (data) {
+  var date = new Date().toISOString();
+  var date_in_report= 'date_to_be_generated';
+  var a = data.indexOf(date_in_report);
+  return data.replace(date_in_report,"\"'"+date+"'\"");
+}
+
+function changeReportNumber (data,key) {
+  var reportNumber= 'icm:reportNumber 2';
+  var newReportNumber = generateIntentReport[key].reportNumbers+3
+  var newLine = reportNumber.substring(0,reportNumber.length-1)+ newReportNumber
+  generateIntentReport[key].reportNumbers=generateIntentReport[key].reportNumbers+1
+  return data.replace(reportNumber,newLine  );
+}
+
+function S1_generateRandomValue (data) {
+  var bandwidth= 'idan:Bandwidth 9435';
+  var delay='idan:Delay 0.95'
+
+  var value1 = Math.floor(Math.random() * 10000);
+  var value2 = Math.round(Math.random() * 100) / 100;
+  var newLine1 = bandwidth.substring(0,bandwidth.length-4)+ value1
+  var newLine2 = delay.substring(0,delay.length-4)+ value2
+  return data.replace(bandwidth,newLine1).replace(delay,newLine2);
+}
+
+function R11_generateRandomValue (data) {
+  var latency= 'idan:RanLatency 10';
+  var tp='idan:RanThroughput 150'
+
+  var value1 = Math.floor(5 + Math.random() * 10);
+  var value2 = Math.floor(100+ Math.random() * 50);
+  var newLine1 = latency.substring(0,latency.length-2)+ value1
+  var newLine2 = tp.substring(0,tp.length-3)+ value2
+  return data.replace(latency,newLine1).replace(tp,newLine2);
+}
+
+function generateReport(){
+  generateIntentReport.forEach(report => {
+      console.log('Regular report '+report.name)
+      fs.readFile('./ontologies/'+report.name+'.ttl', 'utf8', (err, data) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        if (report.reportNumbers<10) { 
+
+           data = addTimestamp(data);
+           data = changeReportNumber(data,generateIntentReport.indexOf(report));
+           if (report.name.indexOf("S1")>=0) data = S1_generateRandomValue(data);
+           else if (report.name.indexOf("R11")>=0) data = R11_generateRandomValue(data);
+           else if (report.name.indexOf("R21")>=0) data = R11_generateRandomValue(data);
+           else if (report.name.indexOf("R31")>=0) data = R11_generateRandomValue(data);
+
+          insertReportEvent(report.name,data,report.req);
+          console.log(`log: Regular Intent Posted ${report.name}`);
+        }
+    });
+    
+  })
+}
+
+function insertReportEvent(name,data,req) {
+
+  const resourceType = 'IntentReport';
+  //generates message
+  const message = createIntentReportMessage(name,data,req);
+
+  var event = {
+    eventId:   uuid.v4(),
+    eventTime: new Date().toISOString(),
+    eventType: "IntentReportCreationNotification",
+    event: {intentReport: message}
+  }
+
+  postIntentReportCreationEvent(event)
+
+}
+function createIntentReportMessage(name,data,req) {
+  var intent_uuid = req.body.id;
+  var intent_href 
+  
+  if (req.body.href!==undefined)
+     intent_href=req.body.href;
+  else 
+     intent_href='http://'+req.headers.host+'/tmf-api/intent/v4/intent/'+intent_uuid;
+  
+    //expression
+  var expression = {
+    iri: "http://tio.models.tmforum.org/tio/v3.2.0/IntentCommonModel",
+    "@baseType": "Expression",
+    "@type": "TurtleExpression", 
+    expressionLanguage: "Turtle",
+    expressionValue: data,
+    "@schemaLocation": "https://mycsp.com:8080/tmf-api/schema/Common/TurtleExpression.schema.json",
+  };
+
+  //intent
+  var intent = {
+    href: intent_href,
+    id: intent_uuid 
+  };
+
+  var id = uuid.v4();
+  var message = {
+    id: id,
+    href: intent_href+'/intentReport/'+id,
+    name: name,
+    creationDate: (new Date()).toISOString(),
+    expression: expression,
+    intent: intent
+  };
+  return message;
+
+}
 module.exports = { 
   process_intents,
   process_reports,
   delete_intents,
   postIntentReportCreationEvent,
   postACTN,
-  deleteACTN
+  deleteACTN,
+  addGenerateIntentReport,
+  removeGenerateIntentReport,
+  generateReport
  };

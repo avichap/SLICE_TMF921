@@ -79,7 +79,7 @@ function deleteIntent(id) {
       .deleteOne(query)
       .then(doc => {
         if (doc.result.n == 1) {
-          console.log("intent deleted " + id);
+//          console.log("intent deleted " + id);
 
         } else {
           console.log("No resource with given id found");
@@ -136,7 +136,7 @@ mongoUtils.connect().then(db => {
     .deleteOne(query)
     .then(doc => {
       if (doc.result.n == 1) {
-         console.log("report deleted " + id);
+//         console.log("report deleted " + id);
 
       } else { 
         console.log("No resource with given id found");
@@ -212,18 +212,18 @@ function extractTriplesandKG (expression,action,type,name) {
 
   var store = $rdf.graph();
   var triples;
-  console.log('extract Triples for '+name +' action ' + action);
+//  console.log('extract Triples for '+name +' action ' + action);
 
  //create rdf object
  try {
    $rdf.parse(expression, store, uri, mimeType,function (){
     triples = store.statementsMatching(undefined, undefined, undefined);
-    console.log('number of triples: '+triples.length);
+//    console.log('number of triples: '+triples.length);
     return kgOperation(triples,action);
 //    return null;
   })
  } catch (err) {
-   console.log(err);
+//   console.log(err);
  };
 
 
@@ -256,7 +256,8 @@ function kgOperation(triples,action) {
       null;
     })
     .catch((err) => {
-      console.log("failed "+ action + " " + err.message);});
+//      console.log("failed "+ action + " " + err.message);
+    });
   }
 
 
@@ -356,13 +357,13 @@ function deleteAllKGData() {
           //console.log('RESULT = ' + JSON.stringify(result))
         })
         .catch((err) => {
-          console.log("failed to delete from graphDB " + err.message);
+//          console.log("failed to delete from graphDB " + err.message);
         });
       }
     }
   })
   .catch((err) => {
-    console.log("failed to read graphDB " + err.message);
+//    console.log("failed to read graphDB " + err.message);
   });
 
 }
@@ -513,8 +514,13 @@ function sendIntentReportEvent(name,filename,req) {
     }
 
     data = addTimestamp(data);
-    const resourceType = 'IntentReport';
+    insertReportEvent(name,data,req)
+  })
+}
 
+function insertReportEvent(name,data,req) {
+
+    const resourceType = 'IntentReport';
     //generates message
     const message = createIntentReportMessage(name,data,req);
   
@@ -527,7 +533,6 @@ function sendIntentReportEvent(name,filename,req) {
 
     handlerUtils23.postIntentReportCreationEvent(event)
 
-  });
 }
 
 async function processIntentReportEvent(event,req) {
@@ -536,7 +541,7 @@ async function processIntentReportEvent(event,req) {
   .then (intentid => {
 
     event.event.intentReport.intent.id = intentid[0].id
-    console.log('Intent id in the request ' + event.event.intentReport.intent.id)
+//    console.log('Intent id in the request ' + event.event.intentReport.intent.id)
     event.event.intentReport.href=intentid[0].href+'/intentReport/'+event.event.intentReport.id
     //   console.log(data);
     //2. insert report in grapbdb
@@ -684,7 +689,7 @@ function postIntent(name,filename,req) {
        }
       };
       var url = 'http://'+req.headers.host+req.originalUrl;
-      console.log('URL: '+url);
+      console.log('URL: '+url+ ' Intent: '+name);
       xhttp.open("POST", url, true);
       xhttp.setRequestHeader("Content-Type", "application/json");
       xhttp.setRequestHeader("Accept", "application/json");
@@ -841,5 +846,6 @@ module.exports = {
   deleteAllKGData,
   createIssue,
   processIntentReportEvent,
-  retrieveIntentByName
+  retrieveIntentByName,
+  insertReportEvent
 				   			 };

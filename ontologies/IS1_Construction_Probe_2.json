@@ -1,0 +1,24 @@
+{
+  "statusChangeDate": "2022-07-23T04:56:07.000+00:00",
+  "expression": {
+    "iri": "http://tio.models.tmforum.org/tio/v3.2.0/IntentCommonModel/",
+    "@baseType": "Expression",
+    "@type": "TurtleExpression",
+    "expressionLanguage": "Turtle",
+    "expressionValue": "@prefix icm:  <http://tio.models.tmforum.org/tio/v3.2.0/IntentCommonModel#> .\n@prefix imo:  <http://tio.models.tmforum.org/tio/v3.2.0/IntentManagmentOntology#> .\n@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .\n@prefix idan: <http://www.example.org/IDAN3#> .\n@prefix t:    <http://www.w3.org/2006/time#> .\n@prefix logi:  <http://tio.models.tmforum.org/tio/v3.2.0/LogicalOperators#> .\n@prefix quan: <http://tio.models.tmforum.org/tio/v3.2.0/QuantityOntology#> .\n@prefix set:  <http://tio.models.tmforum.org/tio/v3.2.0/SetOperators#> .\n@prefix fun:  <http://tio.models.tmforum.org/tio/v3.2.0/FunctionOntology#> .\n@prefix ui: <http://www..example.org/ui#> .\n@prefix mf: <http://www..example.org/mf#> .\n@prefix cem: <http://tio.labs.tmforum.org/tio/v1.0.0/CatalystExtensionModel#> .\n@prefix   iv: <http://tio.models.tmforum.org/tio/v3.2.0/IntentValidity#> .\n#intent\nidan:IS1_Construction_Probe_2\n  a icm:Intent ;\n  cem:layer idan:service ;\n  imo:intentOwner idan:Service ;\n  rdfs:comment \"'Intent for helmet service'\" ;\n  icm:hasExpectation idan:ES1_helmet_expectation_Probe_2,\n                       idan:ES1_helmet_property_Probe_2,  \n                        idan:ES1_reporting_expectation_Probe_2\n     .\nidan:ES1_helmet_expectation_Probe_2\n  a icm:DeliveryExpectation ;\n    icm:target idan:TransportNetwork ;\n.\n# targets\nidan:TransportNetwork\n  a icm:Target ;\n  icm:allOf [ rdfs:member idan:HelmetService]\n.\n# we need certain performance/QoE properties for the service\nidan:ES1_helmet_property_Probe_2\n  a icm:PropertyExpectation ;\n  icm:target idan:TransportNetwork ;\n  logi:allOf [rdfs:member idan:CS1_Transport ;\n               rdfs:member idan:CS1_RAN ;\n               rdfs:member idan:CS1_Cloud               ]\n.\n# conditions\nidan:CS1_Transport\n  a icm:Condition ;\n  rdfs:label \"\" ;\n  idan:Bandwidth [ quan:greater\n                 [ rdf:value \"2000\"^^xsd:decimal ;\n                   icm:unit80000 \"'Mbps'\"] \n               ];\n  idan:Delay [ quan:smaller\n                 [ rdf:value \"1.5\"^^xsd:decimal ;\n                   icm:unit80000 \"'s'\"] \n               ];\n.\nidan:CS1_RAN\n  a icm:Condition ;\n  rdfs:label \"\" ;\n.\nidan:CS1_Cloud\n  a icm:Condition ;\n  rdfs:label \"\" ;\n.\n            \n# reporting\n# event for time-based reporting. Triggereing every 5 minutes\nidan:EventS1\n  a rdfs:Class ;\n  rdfs:subClassOf imo:Event ;\n  logi:if [ t:after [imo:timeOfLastEvent [rdfs:member idan:EventS1 ;\n                                              rdfs:member idan:IS1_Construction_Probe_2 ]]  ,\n                         [t:hasDuration idan:5M ] ;\n                t:before [ t:hasBeginning imo:Now ] ;\n         ] ;\n  imo:eventFor idan:IS1_Construction_Probe_2\n.\nidan:ES1_reporting_expectation_Probe_2\n  a icm:ReportingExpectation ;\n  icm:target idan:IS1_Construction_Probe_2  ;\n  icm:reportDestination [ rdfs:member idan:Operations ] ;\n  icm:reportTriggers [ rdfs:member imo:IntentRejected ; \n                       rdfs:member imo:IntentAccepted ;\n                       rdfs:member imo:IntentDegrades ;\n                       rdfs:member imo:IntentComplies ;\n                       rdfs:member imo:IntentRemoval ;\n                       rdfs:member idan:EventS1 ]\n.",
+    "@schemaLocation": "https://mycsp.com:8080/tmf-api/schema/Common/TurtleExpression.schema.json"
+  },
+  "lifecycleStatus": "Created",
+  "@baseType": "Intent",
+  "validFor": {
+    "startDateTime": "2022-04-12T23:20:50.52Z",
+    "endDateTime": "2023-04-12T23:20:50.52Z"
+  },
+  "@type": "ProbeIntent",
+  "lastUpdate": "2022-01-23T04:56:07.000+00:00",
+  "name": "IS1_Construction_Probe_2",
+  "description": "IS1_Construction_Probe_2",
+  "creationDate": "2022-01-23T04:56:07.000+00:00",
+  "@schemaLocation": "https://mycsp.com:8080/tmf-api/schema/Common/TurtleExpression.schema.json",
+  "version": "1"
+}

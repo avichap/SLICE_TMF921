@@ -44,7 +44,7 @@ function validateRequest(req, operation, doc) {
         payloadType = payloadType.substring(6);
       }
 
-      console.log(operation + ' :: validate request :: payloadType=' + payloadType);
+//      console.log(operation + ' :: validate request :: payloadType=' + payloadType);
 
       const op = req.method.toUpperCase();  
 
@@ -61,11 +61,11 @@ function validateRequest(req, operation, doc) {
               return resolve(doc);
             };
           } else {
-            console.log(operation + ' :: validationRulesType2 does not include ' + op);
+//            console.log(operation + ' :: validationRulesType2 does not include ' + op);
             // flow through to 'old' ruleset
         }
       } else {
-        console.log(operation + ' :: validationRulesType2 does not include ' + payloadType);
+//        console.log(operation + ' :: validationRulesType2 does not include ' + payloadType);
         // flow through to 'old' ruleset
       }
     }

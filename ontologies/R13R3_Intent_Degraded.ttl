@@ -19,41 +19,41 @@
 # This intent report is sent on acceptance of the service intnet to the intnet 
 # manager on business level
 # 
-idan:IR23R2_Emergency_Intent_Compliant
+idan:IR13R2_Construction_Intent_Degraded
   a icm:IntentReport ;
   rdfs:comment "'Intent Report after compliant'" ;
-  icm:about idan:IR2_3_Emergency ;
+  icm:about idan:IR1_3_Construction ;
   # put in the live timestamp from the time the report is created:
     icm:reportTimestamp            date_to_be_generated^^xsd:dateTime ;
-  icm:reportHandlingState icm:StateCompliant ;
+  icm:reportHandlingState icm:StateDegraded ;
   icm:updateState icm:StateNoUpdate ;
-  icm:reportNumber 2 ;
+  icm:reportNumber 3 ;
   cem:layer idan:resource ;
-  icm:hasExpectationReport idan:R23R2E1_property ,
-                           idan:R23R2E2_reporting ; 
+  icm:hasExpectationReport idan:R13R2E1_property ,
+                           idan:R13R2E2_reporting ; 
 .
 
 
-idan:R23R2E1_property
+idan:R13R2E1_property
   a icm:PropertyExpectationReport ;
-    icm:about idan:ER2_3_2 ;
+    icm:about idan:ER1_3_2 ;
     icm:result true ; 
     icm:resultFrom idan:CR3 
 .
 
 idan:CR3
   a icm:Condition ;
-  icm:about idan:CR2_3_1 ; 
+  icm:about idan:CR1_3_1 ; 
   rdfs:label "" ;
-  icm:observed [ idan:AccessMode idan:5GSA ;
-                   idan:UploadBandwidth 6.5;
-                   idan:Latency 0.9;
-				   idan:security cem:ipsec;
-                   idan:containers "'200/8/16/200'" ]
+  icm:observed [ idan:AccessMode idan:4G ;
+                   idan:UploadBandwidth 5.5;
+                   idan:Latency 5.6;
+				   idan:security cem:none;
+                   idan:containers "'50/2/4/20/16'" ]
 			   
 ##### Reporting Expectation Report ############################################
 #
-idan:R23R2E2_reporting
+idan:R13R2E2_reporting
   a icm:ExpectationReport ;
   icm:reportsAbout idan:ES2_reporting_expectation ;
   icm:reportingIntervalRemaining [ a t:Duration ;
