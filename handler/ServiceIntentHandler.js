@@ -108,6 +108,10 @@ function sendCreateServiceOrder(id,serviceOrder) {
     var i = 1
     createOrderJson.orderItems.forEach(orderItem=>{
       orderItem.service.publicIdentifier = id+`_${i}`;
+      if (orderItem.service.serviceRelationship[0].service.publicIdentifier.indexOf("serviceIntentId_CONNECTIVITY")>=0) {
+        orderItem.service.serviceRelationship[0].service.publicIdentifier = id+'_1'
+        orderItem.service.serviceRelationship[0].service.name = id+'_1 (' + id + '_1)'
+      }
       i=i+1
     })
 
