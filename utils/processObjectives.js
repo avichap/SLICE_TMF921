@@ -10,6 +10,7 @@ const T = $rdf.Namespace("http://www.w3.org/2006/time#");
 const IMO = $rdf.Namespace("http://tio.models.tmforum.org/tio/v3.2.0/IntentManagmentOntology#");
 const LOGI = $rdf.Namespace("http://tio.models.tmforum.org/tio/v3.2.0/LogicalOperators#");
 const QUAN = $rdf.Namespace("http://tio.models.tmforum.org/tio/v3.2.0/QuantityOntology#");
+const LOG = $rdf.Namespace("http://tio.models.tmforum.org/tio/v2.0.0/LogicalOperators#");
 
 function get_uri_short_name(obj) {
   var split_obj = obj.substring(obj.indexOf('#')+1)
@@ -206,7 +207,7 @@ function R13_values(store,report,intent) {
 
 function R11_values(store,report,intent) {
   var value_array = []  
-  var expectationReport = store.each(report,ICM("hasExpectationReport"),undefined);
+  var expectationReport = store.each(report,LOG("resultFrom"),undefined);
 
   expectationReport.forEach(obj => {
     var exp = store.statementsMatching(obj,ICM("about"),undefined)

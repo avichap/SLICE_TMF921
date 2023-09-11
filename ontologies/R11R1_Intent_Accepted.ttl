@@ -5,7 +5,7 @@
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix idan: <http://www.example.org/IDAN3#> .
 @prefix t:    <http://www.w3.org/2006/time#> .
-@prefix logi:  <http://tio.models.tmforum.org/tio/v3.2.0/LogicalOperators#> .
+@prefix log:  <http://tio.models.tmforum.org/tio/v3.2.0/LogicalOperators#> .
 @prefix quan: <http://tio.models.tmforum.org/tio/v3.2.0/QuantityOntology#> .
 @prefix set:  <http://tio.models.tmforum.org/tio/v3.2.0/SetOperators#> .
 @prefix fun:  <http://tio.models.tmforum.org/tio/v3.2.0/FunctionOntology#> .
@@ -28,7 +28,7 @@ idan:IR11R1_Construction_Intent_Accepted
   icm:updateState icm:StateNoUpdate ;
   icm:reportNumber 1 ;
   cem:layer idan:resource ;
-  icm:hasExpectationReport idan:R11R1E1_property ,
+  log:resultFrom idan:R11R1E1_property ,
                            idan:R11R1E2_reporting ; 
 .
 
