@@ -1,7 +1,7 @@
 {
     "externalId": "external-ID_SentToNBI_BSS_ID",
     "priority": "1",
-    "category": "HELMET_SERVICE - S1 DELETE - CONNECTIVITY + VIDEO-SURVEILLANCE + USER-CONNECTION",
+    "category": "ER_SERVICE - S1 DELETE - INFRASTRUCTURE - CONNECTIVITY + MOBILE_VOICE + USER-CONNECTION",
     "orderType": "TERMINATE",
     "source": "SIMF",
     "relatedParty": [
@@ -20,7 +20,7 @@
                     "code": "USER-CONNECTION",
                     "version": "1.0"
                 },
-                "publicIdentifier": "USER-CONNECTION_HELMET_SERVICE"
+                "publicIdentifier": "USER-CONNECTION_ER_SERVICE"
             },
             "id": 1
         },
@@ -28,10 +28,10 @@
             "action": "Remove",
             "service": {
                 "serviceSpecification": {
-                    "code": "VIDEO-SURVEILLANCE",
+                    "code": "MOBILE_VOICE",
                     "version": "1.0"
                 },
-                "publicIdentifier": "VIDEO-SURVEILLANCE_HELMET_SERVICE"
+                "publicIdentifier": "MOBILE_VOICE_ER_SERVICE"
             },
             "id": 2,
             "orderItemRelationships": [
@@ -50,13 +50,13 @@
                     "version": "1.0"
                 },
                 "category": "CFS",
-                "publicIdentifier": "serviceIntentId_CONNECTIVITY_HELMET_SERVICE"
+                "publicIdentifier": "serviceIntentId_CONNECTIVITY_ER_SERVICE"
             },
             "id": "3",
             "orderItemRelationships": [
                 {
                     "id": "2",
-                    "name": "VIDEO-SURVEILLANCE",
+                    "name": "MOBILE_VOICE",
                     "type": "DEPENDENCY"
                 }
             ]
