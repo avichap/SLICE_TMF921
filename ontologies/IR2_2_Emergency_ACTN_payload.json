@@ -1,0 +1,208 @@
+{
+     "huawei_tunnel":{
+       "ietf-te:tunnel": [
+      {
+         "name": "IR2_2_Emergency_tunnel",
+         "source": "10.1.1.1",
+         "destination": "10.1.1.2",
+         "dst-tunnel-tp-id": "MTI=",
+         "te-bandwidth": {
+            "ietf-otn-tunnel:otn": {
+               "ietf-otn-tunnel:odu-type": "ietf-layer1-types:ODUflex",
+               "ietf-otn-tunnel:gfp-n": 5
+            }
+         },
+         "encoding": "ietf-te-types:lsp-encoding-oduk",
+         "switching-type": "ietf-te-types:switching-otn",
+         "protection": {
+            "enable": "true",
+            "hold-off-time": "0",
+            "protection-reversion-disable": "true",
+            "protection-type": "ietf-te-types:lsp-protection-unprotected",
+            "wait-to-revert": "0"
+         },
+         "admin-state": "ietf-te-types:tunnel-admin-state-up",
+         "primary-paths":{
+            "primary-path" :[
+               {
+                  "name":"primary",
+                  "path-out-segment":{
+                     "label-restrictions":{
+                        "label-restriction":[
+                           {
+                              "index" :1,
+                              "label-start":{
+                                 "te-label":{
+                                    "ietf-otn-tunnel:otn-tpn":1
+                                 }
+                              }
+                           }
+                        ]
+                     }
+                  }
+               }
+            ]
+         }
+      }
+   ]
+     },
+      "huawei_service":{
+       "ietf-eth-tran-service:etht-svc": {
+        "etht-svc-instances": [
+            {
+                "etht-svc-name": "IR2_2_Emergency_service",
+                "etht-svc-descr": "desc-Eth-service",
+                "etht-svc-type": "ietf-eth-tran-types:rmp-svc",
+                "admin-status": "ietf-te-types:tunnel-admin-state-up",
+                "te-topology-identifier": {
+                    "provider-id": "10",
+                    "client-id": "0",
+                    "topology-id": "2"
+                },
+                "underlay": {
+                    "otn-tunnels": [
+                        {
+                            "name": "IR2_2_Emergency_tunnel"
+                        }
+                    ]
+                },
+                "resilience": {
+                    "protection": {
+                        "enable": "true",
+                        "hold-off-time": "0",
+                        "protection-reversion-disable": "true",
+                        "protection-type": "ietf-te-types:lsp-protection-unprotected",
+                        "wait-to-revert": "0"
+                    }
+                },
+                "etht-svc-end-points": [
+                    {
+                        "etht-svc-end-point-name": "uni-01",
+                        "etht-svc-access-points": [
+                            {
+                                "access-point-id": "0",
+                                "access-node-id": "10.1.1.1",
+                                "access-ltp-id": "1000001",
+                                "access-role": "ietf-eth-tran-types:leaf-access"
+                            }
+                        ],
+                        "outer-tag": {
+                            "tag-type": "ietf-eth-tran-types:classify-c-vlan",
+                            "vlan-value": 49
+                        },
+                        "service-classification-type": "ietf-eth-tran-types:vlan-classification",
+                        "ingress-egress-bandwidth-profile": {
+                            "bandwidth-profile-type": "ietf-eth-tran-types:mef-10-bwp",
+                            "CIR": 5000000,
+                            "EIR": 5000000
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+      },
+     "other_tunnel": {
+       "ietf-te:tunnel": [
+      {
+         "name": "IR2_2_Emergency_tunnel",
+         "source": "10.2.1.1",
+         "destination": "10.2.1.2",
+         "src-tunnel-tp-id": "MjI=",
+         "te-bandwidth": {
+            "ietf-otn-tunnel:otn": {
+               "ietf-otn-tunnel:odu-type": "ietf-layer1-types:ODUflex",
+               "ietf-otn-tunnel:gfp-n": 5
+            }
+         },
+         "encoding": "ietf-te-types:lsp-encoding-oduk",
+         "switching-type": "ietf-te-types:switching-otn",
+         "protection": {
+            "enable": "true",
+            "hold-off-time": "0",
+            "protection-reversion-disable": "true",
+            "protection-type": "ietf-te-types:lsp-protection-unprotected",
+            "wait-to-revert": "0"
+         },
+         "admin-state": "ietf-te-types:tunnel-admin-state-up",
+         "primary-paths":{
+            "primary-path" :[
+               {
+                  "name":"primary",
+                  "path-in-segment":{
+                     "label-restrictions":{
+                        "label-restriction":[
+                           {
+                              "index" :1,
+                              "label-start":{
+                                 "te-label":{
+                                    "ietf-otn-tunnel:otn-tpn":1
+                                 }
+                              }
+                           }
+                        ]
+                     }
+                  }
+               }
+            ]
+         }
+      }
+   ]
+     },
+      "other_service": {
+       "ietf-eth-tran-service:etht-svc": {
+        "etht-svc-instances": [
+            {
+                "etht-svc-name": "IR2_2_Emergency_service",
+                "etht-svc-descr": "desc-Eth-service",
+                "etht-svc-type": "ietf-eth-tran-types:rmp-svc",
+                "admin-status": "ietf-te-types:tunnel-admin-state-up",
+                "te-topology-identifier": {
+                    "provider-id": "20",
+                    "client-id": "0",
+                    "topology-id": "2"
+                },
+                "underlay": {
+                    "otn-tunnels": [
+                        {
+                            "name": "IR2_2_Emergency_tunnel"
+                        }
+                    ]
+                },
+                "resilience": {
+                    "protection": {
+                        "enable": "true",
+                        "hold-off-time": "0",
+                        "protection-reversion-disable": "true",
+                        "protection-type": "ietf-te-types:lsp-protection-unprotected",
+                        "wait-to-revert": "0"
+                    }
+                },
+                "etht-svc-end-points": [
+                    {
+                        "etht-svc-end-point-name": "uni-04",
+                        "etht-svc-access-points": [
+                            {
+                                "access-point-id": "0",
+                                "access-node-id": "10.2.1.2",
+                                "access-ltp-id": "512",
+                                "access-role": "ietf-eth-tran-types:root-primary"
+                            }
+                        ],
+                        "outer-tag": {
+                            "tag-type": "ietf-eth-tran-types:classify-c-vlan",
+                            "vlan-value": 49
+                        },
+                        "service-classification-type": "ietf-eth-tran-types:vlan-classification",
+                        "ingress-egress-bandwidth-profile": {
+                            "bandwidth-profile-type": "ietf-eth-tran-types:mef-10-bwp",
+                            "CIR": 5000000,
+                            "EIR": 5000000
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+      }
+    }
