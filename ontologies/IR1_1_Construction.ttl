@@ -43,12 +43,12 @@ idan:UR1_1_1
   a mf:LogisticFunction ;
   a ui:Utility ;
   mf:functionInput idan:RanLatency ;
-  mf:midpoint 40;
+  mf:midpoint 20;
   mf:supremum 1.0 ;
   mf:logisticGrowth -0.2 ;
   iv:validIf [ a icm:Condition;
-               quan:atLeast [ idan:RanLatency [ rdf:value 0 ] ];
-               quan:atMost [ idan:RanLatency [ rdf:value 70 ] ]
+               quan:atLeast [ idan:RanLatency [ rdf:value 1 ] ];
+               quan:atMost [ idan:RanLatency [ rdf:value 80 ] ]
              ] 
 .
 
@@ -57,12 +57,12 @@ idan:UR1_1_2
   a mf:LogisticFunction ;
   a ui:Utility ;
   mf:functionInput idan:RanThroughput  ;
-  mf:midpoint 100 ;
+  mf:midpoint 200 ;
   mf:supremum 1.0 ;
-  mf:logisticGrowth 12 ;
+  mf:logisticGrowth 0.02 ;
   iv:validIf [ a icm:Condition;
-               quan:atLeast [ idan:RanThroughput [ rdf:value 50 ] ];
-               quan:atMost [ idan:RanThroughput [ rdf:value 200 ] ]
+               quan:atLeast [ idan:RanThroughput [ rdf:value 1 ] ];
+               quan:atMost [ idan:RanThroughput [ rdf:value 400 ] ]
              ] 
 .
 
@@ -72,12 +72,12 @@ idan:CR1_1_1
   a icm:Condition ;
   rdfs:label "" ;
   quan:smaller [ idan:RanLatency
-                 [ rdf:value "50"^^xsd:decimal ;
+                 [ rdf:value "25"^^xsd:decimal ;
                    icm:unit80000 "'ms'" ]
                ] ;
   ui:utility idan:UR1_1_1 ;
   quan:greater [ idan:RanThroughput
-                 [ rdf:value "5"^^xsd:decimal ;
+                 [ rdf:value "200"^^xsd:decimal ;
                    icm:unit80000 "'MB/s'"] 
                ];
   ui:utility idan:UR1_1_2
@@ -108,4 +108,3 @@ idan:ER1_1_2
                        rdfs:member imo:IntentRemoval ;
                        rdfs:member idan:EventR1_1_1 ]
 .
-

@@ -384,7 +384,7 @@ function insertIntentReport(message,req1) {
 //      console.log("createReport: loaded into Mongo");
       cleanmessageid(message);
       //generates the intentreport creation event
-      notificationUtils.publish(req1,message);
+      //notificationUtils.publish(req1,message);
 
       //////////////////////////////
       //// port report to python 
@@ -406,8 +406,16 @@ function insertIntentReport(message,req1) {
 ////////////////////////////////////////////////////////
 function createIntentReportMessage(name,data,req) {
   var intent_uuid = req.body.id;
+  var intent_name ;
   var intent_href 
   
+  if (name.indexOf('R11')>=0 || name.indexOf('R21')>=0 || name.indexOf('R31')>=0) {
+    intent_uuid=req.body.name
+  } else if (name.indexOf('R12')>=0 || name.indexOf('R22')>=0 || name.indexOf('R23')>=0) {
+    intent_name=req.body.name
+  } else if (name.indexOf('R13')>=0 || name.indexOf('R23')>=0 || name.indexOf('R33')>=0) {
+    intent_name=req.body.name
+  }
   if (req.body.href!==undefined)
      intent_href=req.body.href;
   else 
@@ -424,10 +432,18 @@ function createIntentReportMessage(name,data,req) {
   };
 
   //intent
-  var intent = {
-    href: intent_href,
-    id: intent_uuid 
-  };
+  if (intent_name==undefined) {
+    var intent = {
+      href: intent_href,
+      id: intent_uuid 
+    };
+  } else {
+    var intent = {
+      href: intent_href,
+      id: 'xxx',
+      name: intent_name
+    };
+  }
 
   var id = uuid.v4();
   var message = {
@@ -537,7 +553,7 @@ function insertReportEvent(name,data,req) {
 
 async function processIntentReportEvent(event,req) {
 
-  await retrieveIntentByName(event.event.intentReport.intent.id)
+  await retrieveIntentByName(event.event.intentReport.intent.name,event.event.intentReport.intent.id)
   .then (intentid => {
 
     event.event.intentReport.intent.id = intentid[0].id
@@ -817,10 +833,23 @@ function checkandSendReport(payload,req) {
 
 }
 
-async function retrieveIntentByName (name) {
- 
+async function retrieveIntentByName (nameInReport,id) {
+  var name
+  if (nameInReport!=undefined)
+    name=nameInReport
+  else 
+    name=id
+
+  var criteria = {
+      name: name
+    }
+  
+  var query = {
+      criteria:criteria
+  }
+
   return await mongoUtils.connect().then(db => {
-    return db.collection('Intent').find(name).toArray()
+    return db.collection('Intent').find(query.criteria, query.options).toArray()
   })
 
 

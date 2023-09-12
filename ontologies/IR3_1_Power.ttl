@@ -43,12 +43,12 @@ idan:UR3_1_1
   a mf:LogisticFunction ;
   a ui:Utility ;
   mf:functionInput idan:Powerconsumption ;
-  mf:midpoint 20;
+  mf:midpoint 150;
   mf:supremum 1.0 ;
-  mf:logisticGrowth -1.6 ;
+  mf:logisticGrowth -0.03 ;
   iv:validIf [ a icm:Condition; #syntax error
-               quan:atLeast [ idan:Powerconsumption [ rdf:value 5 ] ];
-                quan:atMost [ idan:Powerconsumption [ rdf:value 50 ] ]
+               quan:atLeast [ idan:Powerconsumption [ rdf:value 50 ] ];
+                quan:atMost [ idan:Powerconsumption [ rdf:value 400 ] ]
              ] 
 .
 
@@ -58,8 +58,8 @@ idan:CR3_1_1
   a icm:Condition ;
   rdfs:label "'1. Power consumption per square meter < 1.2'" ;
   quan:smaller [ idan:Powerconsumption
-                 [ rdf:value "1.2"^^xsd:decimal ;
-                   icm:unit80000 "'kwh'" ]
+                 [ rdf:value "50.0"^^xsd:decimal ;
+                   icm:unit80000 "'w'" ]
                ] ;
   ui:utility idan:UR3_1_1 ;
 .

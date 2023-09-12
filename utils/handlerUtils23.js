@@ -53,8 +53,8 @@ var graphDBContext = null;
 // property from theintent request                  //  
 //////////////////////////////////////////////////////
 function postIntentReportCreationEvent(event) {
-//  const url = `http://${server}:8092/tmf-api/intent/v4/listener/intentReportCreateEvent`
-  const url = `http://localhost:8092/tmf-api/intent/v4/listener/intentReportCreateEvent`
+  const url = `http://${server}:8092/tmf-api/intent/v4/listener/intentReportCreateEvent`
+//  const url = `http://localhost:8092/tmf-api/intent/v4/listener/intentReportCreateEvent`
   //console.log('XXX: In 23 '+url);
     
     post(url,event)
