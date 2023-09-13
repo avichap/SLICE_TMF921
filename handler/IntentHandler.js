@@ -58,8 +58,6 @@ if (req.body.name.indexOf('ACTN')>0) {
     /// Test R31 process
     if (expression.indexOf("R3_1") >= 0) {
       reports = ['R31R1_Intent_Accepted','R31R2_Intent_Compliant']
-    } else if (expression.indexOf("R3_2") >= 0) {
-      reports = ['R32R1_Intent_Accepted','R32R2_Intent_Compliant']
     } else if (expression.indexOf("R3_3") >= 0) {
       reports = ['R33R1_Intent_Accepted','R33R2_Intent_Compliant']
     } else if (expression.indexOf("R2_3") >= 0) {
@@ -67,21 +65,28 @@ if (req.body.name.indexOf('ACTN')>0) {
     } else if (expression.indexOf("R2_1") >= 0) {
       reports = ['R21R1_Intent_Accepted','R21R2_Intent_Compliant']
       handlerUtils23.addGenerateIntentReport('R21R2_Intent_Compliant',req)
-    } else if (expression.indexOf("R2_2") >= 0) {
-      reports = ['R22R1_Intent_Accepted','R22R2_Intent_Compliant']
     } else if (expression.indexOf("R1_3") >= 0) {
       reports = ['R13R1_Intent_Accepted','R13R2_Intent_Compliant']
     } else if (expression.indexOf("R1_1") >= 0) {
       reports = ['R11R1_Intent_Accepted','R11R2_Intent_Compliant']
       handlerUtils23.addGenerateIntentReport('R11R2_Intent_Compliant',req)
-    } else if (expression.indexOf("R1_2") >= 0) {
-      reports = ['R12R1_Intent_Accepted','R12R2_Intent_Compliant']
     }
     reports.forEach (report => { 
       handlerUtils.sendIntentReportEvent(report,report+'.ttl',req);
       console.log(`log: ${report} sent`);
     }) 
   }
+  if (expression.indexOf("R3_2") >= 0) {
+    reports = ['R32R1_Intent_Accepted','R32R2_Intent_Compliant']
+  } else if (expression.indexOf("R2_2") >= 0) {
+    reports = ['R22R1_Intent_Accepted','R22R2_Intent_Compliant']
+  } else if (expression.indexOf("R1_2") >= 0) {
+    reports = ['R12R1_Intent_Accepted','R12R2_Intent_Compliant']
+  }
+  reports.forEach (report => { 
+    handlerUtils.sendIntentReportEvent(report,report+'.ttl',req);
+    console.log(`log: ${report} sent`);
+  }) 
 };
 
 
