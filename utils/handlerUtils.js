@@ -203,13 +203,13 @@ function getIntentReportExpressionandDeleteKG(id,resourceType) {
 // Once parsing is done it will insert or delete,      //
 // according to action parameter                       //  
 ////////////////////////////////////////////////////////
-function extractTriplesandKG (expression,action,type,name) {
+function extractTriplesandKG (expression2,action,type,name) {
   var uri = 'http://www.example.org/IDAN3#';
   var mimeType = 'application/ld+json';
   if(type!==undefined) {
     mimeType = type;
   }
-
+  var expression = expression2.replace("5G SA","5GSA")
   var store = $rdf.graph();
   var triples;
 //  console.log('extract Triples for '+name +' action ' + action);
