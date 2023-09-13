@@ -18,7 +18,7 @@
 #
 # This intent report is sent on acceptance of the intent 
 # 
-idan:IR13R1_Power_Intent_Accepted
+idan:IR13R1_Construction_Intent_Accepted
   a icm:IntentReport ;
   rdfs:comment "'Intent Report after accepting the intent'" ;
   icm:about idan:IR1_3_Construction ;
