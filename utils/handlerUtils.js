@@ -30,6 +30,8 @@ var graphDBEndpoint = null;
 var issuegraphDBEndpoint = null;
 var graphDBContext = null;
 
+const RDF = $rdf.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+const ICM = $rdf.Namespace("http://tio.models.tmforum.org/tio/v3.2.0/IntentCommonModel#");
 //Wait between reports, 10s
 const wait_number = 0;
 
@@ -388,7 +390,10 @@ function insertIntentReport(message,req1) {
       //////////////////////////////
       //// port report to python 
       //handlerUtils23.postPythonRI(req.originalUrl+'/'+message.intent.id+'/intentReport',message.id,message);
-      handlerUtils23.process_reports(message.expression.expressionValue,message.intent.id,message.id)
+      handlerUtils23.process_reports(message.expression.expressionValue,message.intent.id,message.id,req1)
+
+      //process_report
+      process_reports(message.expression.expressionValue,message.intent.id,message.id,req1)
       ///////////////////////////////////
 
     })
@@ -396,10 +401,49 @@ function insertIntentReport(message,req1) {
       console.log("createReport: error=" + error);
     })
 })
-
-
 }
 
+function get_uri_short_name(obj) {
+  var split_obj = obj.substring(obj.indexOf('#')+1)
+  return split_obj
+}
+
+function process_reports (expression,intentid,id,req) {
+  var uri = 'http://www.example.org/IDAN3#';
+  var mimeType = 'text/turtle';
+
+  var store = $rdf.graph();
+
+ //create rdf object
+ try {
+   $rdf.parse(expression, store, uri, mimeType,function (){
+    var report = store.each(undefined, RDF('type'), ICM('IntentReport'));
+    var state = store.each(report[0], ICM('reportHandlingState'),undefined);
+    var intent = store.each(report[0], ICM('about'),undefined);
+
+    //send service degraded report if resource is degraded
+    if ((intent[0].value.indexOf("R1_1")>0)&& (get_uri_short_name(state[0].value)=="StateDegraded")) {
+      //send degraded report for S1
+      var x = 'S1R3_Intent_Degraded'
+      sendIntentReport(x, x+'.ttl', req);
+      console.log(`log: ${x} Intent Posted`);
+    } else if ((intent[0].value.indexOf("R2_1")>0)&& (get_uri_short_name(state[0].value)=="StateDegraded")) {
+      //send degraded report for S2      
+      var x = 'S2R3_Intent_Degraded'
+      sendIntentReport(x, x+'.ttl', req);
+      console.log(`log: ${x} Intent Posted`);    
+    } else if ((intent[0].value.indexOf("R3_1")>0)&& (get_uri_short_name(state[0].value)=="StateDegraded")) {
+      //send degraded report for S2      
+      var x = 'S3R3_Intent_Degraded'
+      sendIntentReport(x, x+'.ttl', req);
+      console.log(`log: ${x} Intent Posted`);
+    }
+  })
+ }
+ catch (err) {
+  console.log(err)
+ }
+}
 ////////////////////////////////////////////////////////
 // Generates intent report message                    //
 ////////////////////////////////////////////////////////

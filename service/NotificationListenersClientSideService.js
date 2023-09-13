@@ -297,6 +297,16 @@ exports.listenToIntentReportCreateEvent = function(req, res, next) {
 
       payload = swaggerUtils.updatePayloadServiceType(payload, req,'');
 
+      var reportNumber = payload.event.intentReport.expression.expressionValue.substring(payload.event.intentReport.expression.expressionValue.indexOf("reportNumber"))
+      reportNumber = reportNumber.substring(12,reportNumber.indexOf(';'))
+
+      const maxReport = process.env.maxReports!==undefined ? process.env.maxReports:"20"
+
+      if (reportNumber > maxReport) {
+        console.log ('Too many reports, stop processing') 
+        return
+      }
+
       handlerUtils.processIntentReportEvent(payload,req)
 
 

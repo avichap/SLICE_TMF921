@@ -35,6 +35,7 @@ const MET = $rdf.Namespace("http://www.sdo2.org/TelecomMetrics/Version_1.0#");
 const T = $rdf.Namespace("http://www.w3.org/2006/time#");
 const IMO = $rdf.Namespace("http://tio.models.tmforum.org/tio/v3.2.0/IntentManagmentOntology#");
 const LOGI = $rdf.Namespace("http://tio.models.tmforum.org/tio/v3.2.0/LogicalOperators#");
+
 const handlerUtils = require('../utils/handlerUtils');
 
 var generateIntentReport=[];
@@ -278,7 +279,7 @@ function prepare_hierarchy (store,child) {
   
 };
 
-async function process_reports (expression,intentid,id) {
+async function process_reports (expression,intentid,id,req) {
   var uri = 'http://www.example.org/IDAN3#';
   var mimeType = 'text/turtle';
 
@@ -291,15 +292,14 @@ async function process_reports (expression,intentid,id) {
      var  reports = values [0]
      var objectives = values [1]
 
+
     persist.processReports (reports)
     .then ((result) => {
-
+  
       objectives.forEach (obj => {
         persist.queryValues (obj.intent,obj.objective)
         .then ((result) => persist.processValues (result,obj))
       })
-
-
     })
   })
  }
@@ -350,10 +350,11 @@ function addGenerateIntentReport(intentReport,req){
     generateIntentReport.push({name:intentReport,req: req, reportNumbers:0})
 }
 function removeGenerateIntentReport(intentReport){
-  const index = generateIntentReport.indexOf(intentReport);
-  if (index > -1) { 
-    generateIntentReport.splice(index, 1); 
-  } 
+  generateIntentReport.forEach(rep => {
+    if (rep.name == intentReport)
+      generateIntentReport.splice(rep, 1);
+      return
+  })
 }
 
 function addTimestamp (data) {
@@ -385,15 +386,19 @@ function S1_generateRandomValue (data) {
 function R11_generateRandomValue (data) {
   var latency= 'idan:RanLatency 10';
   var tp='idan:RanThroughput 150'
+  var power='Powerconsumption 34'
 
   var value1 = Math.floor(5 + Math.random() * 10);
   var value2 = Math.floor(100+ Math.random() * 50);
+  var value3 = Math.floor(25+ Math.random() * 25);
   var newLine1 = latency.substring(0,latency.length-2)+ value1
   var newLine2 = tp.substring(0,tp.length-3)+ value2
-  return data.replace(latency,newLine1).replace(tp,newLine2);
+  var newLine3 = power.substring(0,power.length-2)+ value3
+  return data.replace(latency,newLine1).replace(tp,newLine2).replace(power,newLine3);
 }
 
 function generateReport(){
+  console.log('Automatic Report '+generateIntentReport.length)
   generateIntentReport.forEach(report => {
       console.log('Regular report '+report.name)
       fs.readFile('./ontologies/'+report.name+'.ttl', 'utf8', (err, data) => {

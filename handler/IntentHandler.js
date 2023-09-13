@@ -58,6 +58,7 @@ if (req.body.name.indexOf('ACTN')>0) {
     /// Test R31 process
     if (expression.indexOf("R3_1") >= 0) {
       reports = ['R31R1_Intent_Accepted','R31R2_Intent_Compliant']
+      handlerUtils23.addGenerateIntentReport('R31R2_Intent_Compliant',req)
     } else if (expression.indexOf("R3_3") >= 0) {
       reports = ['R33R1_Intent_Accepted','R33R2_Intent_Compliant']
     } else if (expression.indexOf("R2_3") >= 0) {
@@ -109,7 +110,18 @@ exports.deleteIntent = function(query,resourceType,name) {
     //Call the python server 
     //    handlerUtils23.deletePythonRI(req,query.id);
     handlerUtils23.delete_intents(name)
-    /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
+
+    if (sendResource) {
+      /// Test R31 process
+      if (name.indexOf("R3_1") >= 0) {
+        handlerUtils23.removeGenerateIntentReport('R31R2_Intent_Compliant')
+      } else if (name.indexOf("R2_1") >= 0) {
+        handlerUtils23.addGenerateIntentReport('R21R2_Intent_Compliant')
+      } else if (name.indexOf("R1_1") >= 0) {
+        handlerUtils23.addGenerateIntentReport('R11R2_Intent_Compliant')
+      }
+    }
+      /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
   
 
 };
@@ -139,6 +151,7 @@ exports.deleteIntentbyName = function(name,req,serviceIntent) {
     //Call the python server 
 //    handlerUtils23.deletePythonRI(req,x.id);
     handlerUtils23.delete_intents(name)
+
 /* 2023 XXXXXXXXXXXXX Huawei IRC - End  XXXXXXXXXXXXXXXx*/
     })
   })

@@ -21,7 +21,7 @@ const intentHandler = require('./IntentHandler')
 
 const S1_children = ['IR1_1_Construction.ttl','IR1_3_Construction.ttl','IR1_2_Construction_ACTN.json']
 const S2_children = ['IR2_1_Emergency.ttl','IR2_3_Emergency.ttl','IR2_2_Emergency_ACTN.json']
-const S3_children = ['IR3_1_Power.ttl','IR3_3_Power.ttl','IR3_2_Power.ttl']
+const S3_children = ['IR3_1_Power.ttl']
 const sendResourceStr = process.env.SEND_RESOURCE_INTENT!==undefined ? process.env.SEND_RESOURCE_INTENT:'true'
 const sendResource = sendResourceStr=='false' ? false:true
 console.log('SendReource '+sendResource)
