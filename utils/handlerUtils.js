@@ -556,9 +556,18 @@ async function processIntentReportEvent(event,req) {
   await retrieveIntentByName(event.event.intentReport.intent.name,event.event.intentReport.intent.id)
   .then (intentid => {
 
-    event.event.intentReport.intent.id = intentid[0].id
+    var intId
+    var intHref
+    if (intentid[0] == undefined) {
+      intId = event.event.intentReport.intent.id
+      intHref = event.event.intentReport.intent.href
+    } else {
+      intId = intentid[0].id
+      intHref = intentid[0].href
+    }
+    event.event.intentReport.intent.id = intId
 //    console.log('Intent id in the request ' + event.event.intentReport.intent.id)
-    event.event.intentReport.href=intentid[0].href+'/intentReport/'+event.event.intentReport.id
+    event.event.intentReport.href=intHref+'/intentReport/'+event.event.intentReport.id
     //   console.log(data);
     //2. insert report in grapbdb
     extractTriplesandKG(event.event.intentReport.expression.expressionValue,`insert`,'text/turtle',event.event.intentReport.name);
@@ -847,7 +856,7 @@ async function retrieveIntentByName (nameInReport,id) {
   var query = {
       criteria:criteria
   }
-
+  console.log("Retrieving Intent: "+name+' '+id)
   return await mongoUtils.connect().then(db => {
     return db.collection('Intent').find(query.criteria, query.options).toArray()
   })
