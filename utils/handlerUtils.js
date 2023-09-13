@@ -422,18 +422,26 @@ function process_reports (expression,intentid,id,req) {
     var intent = store.each(report[0], ICM('about'),undefined);
 
     //send service degraded report if resource is degraded
-    if ((intent[0].value.indexOf("R1_1")>0)&& (get_uri_short_name(state[0].value)=="StateDegraded")) {
+    if ((intent[0].value.indexOf("R1_1")>0) ) {
+      if (get_uri_short_name(state[0].value)=="StateDegraded") 
+         var x = 'S1R3_Intent_Degraded'
+      else
+         var x = 'S1R2_Intent_Compliant'
       //send degraded report for S1
-      var x = 'S1R3_Intent_Degraded'
       sendIntentReport(x, x+'.ttl', req);
       console.log(`log: ${x} Intent Posted`);
-    } else if ((intent[0].value.indexOf("R2_1")>0)&& (get_uri_short_name(state[0].value)=="StateDegraded")) {
-      //send degraded report for S2      
-      var x = 'S2R3_Intent_Degraded'
+    } else if ((intent[0].value.indexOf("R2_1")>0)) {
+      if (get_uri_short_name(state[0].value)=="StateDegraded") 
+         var x = 'S1R3_Intent_Degraded'
+      else
+         var x = 'S1R2_Intent_Compliant'
       sendIntentReport(x, x+'.ttl', req);
       console.log(`log: ${x} Intent Posted`);    
-    } else if ((intent[0].value.indexOf("R3_1")>0)&& (get_uri_short_name(state[0].value)=="StateDegraded")) {
-      //send degraded report for S2      
+    } else if ((intent[0].value.indexOf("R3_1")>0)) {
+      if (get_uri_short_name(state[0].value)=="StateDegraded") 
+         var x = 'S1R3_Intent_Degraded'
+      else
+         var x = 'S1R2_Intent_Compliant'
       var x = 'S3R3_Intent_Degraded'
       sendIntentReport(x, x+'.ttl', req);
       console.log(`log: ${x} Intent Posted`);

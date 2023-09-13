@@ -19,7 +19,7 @@
 # This intent report is sent on acceptance of the service intnet to the intnet 
 # manager on business level
 # 
-idan:IS3_Power_Intent_Compliant
+idan:IS3_Power_Intent_Degraded
   a icm:IntentReport ;
   rdfs:comment "'Intent Report after compliant'" ;
   icm:about idan:IS3_Power ;

@@ -10,7 +10,8 @@
         "program": "${workspaceFolder}\\index.js",
         "env": {
           "GRAPHQL_ENGINE_URL": "10.220.239.74",
-          "SEND_RESOURCE_INTENT": true
+          "SEND_RESOURCE_INTENT": true,
+          "maxReports": 5
        }
       }
     ]

@@ -302,6 +302,7 @@ exports.listenToIntentReportCreateEvent = function(req, res, next) {
 
       const maxReport = process.env.maxReports!==undefined ? process.env.maxReports:"20"
 
+      console.log("Current Report: "+reportNumber+" MaxReport: "+maxReport)
       if (reportNumber > maxReport) {
         console.log ('Too many reports, stop processing') 
         return

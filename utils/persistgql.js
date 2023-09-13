@@ -2,7 +2,7 @@ const { ApolloClient, ApolloProvider, InMemoryCache, gql, useSubscription, useMu
 const { HttpLink,createHttpLink } = require("apollo-link-http");
 const {fetch} = require('apollo-env');
 
-const grpurl = process.env.REACT_APP_GRAPHQL_ENGINE_URL!==undefined ? process.env.REACT_APP_GRAPHQL_ENGINE_URL:"10.220.239.74"
+const grpurl = process.env.GRAPHQL_ENGINE_URL!==undefined ? process.env.GRAPHQL_ENGINE_URL:"10.220.239.74"
 
 const httpLink = new HttpLink({
   fetch: fetch,
