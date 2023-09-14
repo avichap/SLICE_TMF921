@@ -322,11 +322,13 @@ function prepare_reports(store,id) {
     intent: intent?get_uri_short_name(intent[0].value):"",
     sequence: seq?seq[0].value:""
   }
+  console.log('New report arrived, procesing values ')
+  console.log(report_obj)
 
   //objectives
   obj_array.push(...processObjectives.values(store,report[0],get_uri_short_name(intent[0].value)))
 
-  console.log(report_obj)
+
   return [report_obj, obj_array]
 }
 

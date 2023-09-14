@@ -432,17 +432,16 @@ function process_reports (expression,intentid,id,req) {
       console.log(`log: ${x} Intent Posted`);
     } else if ((intent[0].value.indexOf("R2_1")>0)) {
       if (get_uri_short_name(state[0].value)=="StateDegraded") 
-         var x = 'S1R3_Intent_Degraded'
+         var x = 'S2R3_Intent_Degraded'
       else
-         var x = 'S1R2_Intent_Compliant'
+         var x = 'S2R2_Intent_Compliant'
       sendIntentReport(x, x+'.ttl', req);
       console.log(`log: ${x} Intent Posted`);    
     } else if ((intent[0].value.indexOf("R3_1")>0)) {
       if (get_uri_short_name(state[0].value)=="StateDegraded") 
-         var x = 'S1R3_Intent_Degraded'
+         var x = 'S3R3_Intent_Degraded'
       else
-         var x = 'S1R2_Intent_Compliant'
-      var x = 'S3R3_Intent_Degraded'
+         var x = 'S3R2_Intent_Compliant'
       sendIntentReport(x, x+'.ttl', req);
       console.log(`log: ${x} Intent Posted`);
     }

@@ -242,7 +242,6 @@ function processValues (result,objectiveValues) {
 function hierarchyResults(result) {
   return new Promise(function (resolve, reject) {
     var res 
-    console.log('Query susscesful: '+result)
     if (result.data.intents[0]!=undefined) res = result.data.intents[0].intent
     resolve(res)
   })  

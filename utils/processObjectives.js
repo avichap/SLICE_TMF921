@@ -218,7 +218,9 @@ function R11_values(store,report,intent) {
         try {
             var obj_obj = value_object(obj2.predicate.value+  ' (Utility)',obj2.object.value,intent,exp[0].object.value)
             value_array.push(obj_obj)
-
+            console.log('Value extracted ')
+            console.log(obj_obj)
+          
         }  catch (err) {
           console.log(err)
          }
