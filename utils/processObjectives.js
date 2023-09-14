@@ -9,7 +9,7 @@ const MET = $rdf.Namespace("http://www.sdo2.org/TelecomMetrics/Version_1.0#");
 const T = $rdf.Namespace("http://www.w3.org/2006/time#");
 const IMO = $rdf.Namespace("http://tio.models.tmforum.org/tio/v3.2.0/IntentManagmentOntology#");
 const QUAN = $rdf.Namespace("http://tio.models.tmforum.org/tio/v3.2.0/QuantityOntology#");
-const LOG = $rdf.Namespace("http://tio.models.tmforum.org/tio/v3.2.0/LogicalOperators#");
+const LOG = $rdf.Namespace("http://tio.models.tmforum.org/tio/v2.0.0/LogicalOperators#");
 const LOGI = $rdf.Namespace("http://tio.models.tmforum.org/tio/v3.2.0/LogicalOperators#");
 
 function get_uri_short_name(obj) {
