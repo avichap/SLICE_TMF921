@@ -447,9 +447,9 @@ function process_reports (expression,intentid,id,req) {
       console.log(`log: ${x} Intent Posted`);
     } else if ((intent[0].value.indexOf("1_3")>0)) {
       if (get_uri_short_name(state[0].value)=="StateDegraded") 
-         var x = 'S3R3_Intent_Degraded'
+         var x = 'S1R3_Intent_Degraded'
       else
-         var x = 'S3R2_Intent_Compliant'
+         var x = 'S1R2_Intent_Compliant'
       stopSending = true
       sendIntentReport(x, x+'.ttl', req);
       console.log(`log: ${x} Intent Posted`);
