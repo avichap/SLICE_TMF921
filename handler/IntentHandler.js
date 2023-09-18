@@ -78,11 +78,11 @@ if (req.body.name.indexOf('ACTN')>0) {
     }) 
   }
   if (expression.indexOf("R3_2") >= 0) {
-    reports = ['R32R1_Intent_Accepted','R32R2_Intent_Compliant']
+    reports = ['R32R2_Intent_Compliant']
   } else if (expression.indexOf("R2_2") >= 0) {
-    reports = ['R22R1_Intent_Accepted','R22R2_Intent_Compliant']
+    reports = ['R22R2_Intent_Compliant']
   } else if (expression.indexOf("R1_2") >= 0) {
-    reports = ['R12R1_Intent_Accepted','R12R2_Intent_Compliant']
+    reports = ['R12R2_Intent_Compliant']
   }
   reports.forEach (report => { 
     handlerUtils.sendIntentReportEvent(report,report+'.ttl',req);
