@@ -422,13 +422,14 @@ function process_reports (expression,intentid,id,req) {
     var intent = store.each(report[0], ICM('about'),undefined);
 
     //send service degraded report if resource is degraded
+    var stopSending = false
     if ((intent[0].value.indexOf("R1_1")>0) ) {
       if (get_uri_short_name(state[0].value)=="StateDegraded") 
          var x = 'S1R3_Intent_Degraded'
       else
          var x = 'S1R2_Intent_Compliant'
       //send degraded report for S1
-      sendIntentReport(x, x+'.ttl', req);
+      if (!stopSending) sendIntentReport(x, x+'.ttl', req);
       console.log(`log: ${x} Intent Posted`);
     } else if ((intent[0].value.indexOf("R2_1")>0)) {
       if (get_uri_short_name(state[0].value)=="StateDegraded") 
@@ -442,6 +443,14 @@ function process_reports (expression,intentid,id,req) {
          var x = 'S3R3_Intent_Degraded'
       else
          var x = 'S3R2_Intent_Compliant'
+      sendIntentReport(x, x+'.ttl', req);
+      console.log(`log: ${x} Intent Posted`);
+    } else if ((intent[0].value.indexOf("1_3")>0)) {
+      if (get_uri_short_name(state[0].value)=="StateDegraded") 
+         var x = 'S3R3_Intent_Degraded'
+      else
+         var x = 'S3R2_Intent_Compliant'
+      stopSending = true
       sendIntentReport(x, x+'.ttl', req);
       console.log(`log: ${x} Intent Posted`);
     }
